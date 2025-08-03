@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/garments-pos-system/static/css/main.1e9cf591.css",
+    "main.js": "/garments-pos-system/static/js/main.bada1a9f.js",
+    "static/js/453.89d27dea.chunk.js": "/garments-pos-system/static/js/453.89d27dea.chunk.js",
+    "index.html": "/garments-pos-system/index.html",
+    "main.1e9cf591.css.map": "/garments-pos-system/static/css/main.1e9cf591.css.map",
+    "main.bada1a9f.js.map": "/garments-pos-system/static/js/main.bada1a9f.js.map",
+    "453.89d27dea.chunk.js.map": "/garments-pos-system/static/js/453.89d27dea.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.1e9cf591.css",
+    "static/js/main.bada1a9f.js"
+  ]
+}
