@@ -6,10 +6,10 @@ setup(
     description="Garments POS System Backend",
     packages=find_packages(),
     install_requires=[
-        "fastapi==0.104.1",
+        "fastapi==0.103.2",
         "uvicorn[standard]==0.24.0",
         "sqlalchemy==2.0.23",
-        "pydantic==2.7.0",
+        "pydantic==2.5.3",
         "python-jose[cryptography]==3.3.0",
         "passlib[bcrypt]==1.7.4",
         "python-multipart==0.0.6",
