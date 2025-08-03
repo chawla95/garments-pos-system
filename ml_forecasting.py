@@ -6,7 +6,8 @@ import logging
 from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
-from models import Sale, Product, InventoryItem
+from sqlalchemy import and_, func
+from models import Invoice, InvoiceItem, Product, InventoryItem
 import numpy as np
 
 # Try to import pandas, but don't fail if it's not available
@@ -29,20 +30,20 @@ class InventoryAnalytics:
         
         # Get sales data from invoice items
         sales_data = db.query(
-            models.InvoiceItem.product_name,
-            models.InvoiceItem.quantity,
-            models.Invoice.created_at,
-            models.InvoiceItem.inventory_item_id
+            InvoiceItem.product_name,
+            InvoiceItem.quantity,
+            Invoice.created_at,
+            InvoiceItem.inventory_item_id
         ).join(
-            models.Invoice, models.InvoiceItem.invoice_id == models.Invoice.id
+            Invoice, InvoiceItem.invoice_id == Invoice.id
         ).filter(
             and_(
-                models.InvoiceItem.inventory_item_id.in_(
-                    db.query(models.InventoryItem.id).filter(
-                        models.InventoryItem.product_id == product_id
+                InvoiceItem.inventory_item_id.in_(
+                    db.query(InventoryItem.id).filter(
+                        InventoryItem.product_id == product_id
                     )
                 ),
-                models.Invoice.created_at >= cutoff_date
+                Invoice.created_at >= cutoff_date
             )
         ).all()
         
@@ -69,13 +70,13 @@ class InventoryAnalytics:
     def analyze_product(self, db: Session, product_id: int) -> Dict:
         """Analyze a product for demand forecasting and inventory optimization"""
         # Get product info
-        product = db.query(models.Product).filter(models.Product.id == product_id).first()
+        product = db.query(Product).filter(Product.id == product_id).first()
         if not product:
             return {}
         
         # Get current inventory
-        current_inventory = int(db.query(func.sum(models.InventoryItem.quantity)).filter(
-            models.InventoryItem.product_id == product_id
+        current_inventory = int(db.query(func.sum(InventoryItem.quantity)).filter(
+            InventoryItem.product_id == product_id
         ).scalar() or 0)
         
         # Get sales data
@@ -142,7 +143,7 @@ class InventoryAnalytics:
     
     def get_inventory_analysis(self, db: Session) -> Dict:
         """Get comprehensive inventory analysis for all products"""
-        products = db.query(models.Product).all()
+        products = db.query(Product).all()
         
         analysis_results = []
         deadstock_items = []
@@ -175,7 +176,7 @@ class InventoryAnalytics:
     
     def get_reorder_suggestions(self, db: Session) -> List[Dict]:
         """Get reorder suggestions for products that need restocking"""
-        products = db.query(models.Product).all()
+        products = db.query(Product).all()
         
         suggestions = []
         for product in products:
@@ -193,7 +194,7 @@ class InventoryAnalytics:
         return suggestions
 
     def get_demand_forecast(self, db: Session, product_id: int, days: int = 30) -> Dict:
-        """Get demand forecast for a product"""
+        """Get demand forecast for a specific product"""
         if not PANDAS_AVAILABLE:
             return {
                 "product_id": product_id,
@@ -203,9 +204,20 @@ class InventoryAnalytics:
             }
         
         try:
-            # Get historical sales data
-            sales_data = db.query(Sale).filter(
-                Sale.product_id == product_id
+            # Get historical sales data from invoice items
+            cutoff_date = datetime.now() - timedelta(days=90)
+            sales_data = db.query(
+                InvoiceItem.quantity,
+                Invoice.created_at
+            ).join(
+                Invoice, InvoiceItem.invoice_id == Invoice.id
+            ).join(
+                InventoryItem, InvoiceItem.inventory_item_id == InventoryItem.id
+            ).filter(
+                and_(
+                    InventoryItem.product_id == product_id,
+                    Invoice.created_at >= cutoff_date
+                )
             ).all()
             
             if not sales_data:
@@ -219,9 +231,8 @@ class InventoryAnalytics:
             # Convert to pandas DataFrame for analysis
             df = pd.DataFrame([
                 {
-                    'date': sale.sale_date,
-                    'quantity': sale.quantity,
-                    'amount': sale.total_amount
+                    'date': sale.created_at.date(),
+                    'quantity': sale.quantity
                 }
                 for sale in sales_data
             ])
