@@ -6,8 +6,14 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from pydantic import ValidationError
 from sqlalchemy.exc import SQLAlchemyError, OperationalError, IntegrityError
-import psycopg
 import psycopg2
+
+# Try to import psycopg (newer version), but don't fail if not available
+try:
+    import psycopg
+    PSYCOPG_AVAILABLE = True
+except ImportError:
+    PSYCOPG_AVAILABLE = False
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -63,7 +69,11 @@ async def global_exception_handler(request: Request, exc: Exception) -> JSONResp
         status_code = 503
         detail = "Database error"
         error_code = "DATABASE_ERROR"
-    elif isinstance(exc, (psycopg.Error, psycopg2.Error)):
+    elif isinstance(exc, psycopg2.Error):
+        status_code = 503
+        detail = "Database connection error"
+        error_code = "DB_CONNECTION_ERROR"
+    elif PSYCOPG_AVAILABLE and isinstance(exc, psycopg.Error):
         status_code = 503
         detail = "Database connection error"
         error_code = "DB_CONNECTION_ERROR"
@@ -129,14 +139,14 @@ def validate_dependencies():
         errors.append(f"SQLAlchemy import error: {e}")
     
     try:
-        import psycopg
-        logger.info("psycopg3 available")
-    except ImportError:
-        try:
+        if PSYCOPG_AVAILABLE:
+            import psycopg
+            logger.info("psycopg3 available")
+        else:
             import psycopg2
             logger.info("psycopg2 available")
-        except ImportError as e:
-            errors.append(f"PostgreSQL driver import error: {e}")
+    except ImportError as e:
+        errors.append(f"PostgreSQL driver import error: {e}")
     
     if errors:
         raise DependencyError(f"Dependency validation failed: {'; '.join(errors)}")

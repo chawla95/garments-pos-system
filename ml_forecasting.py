@@ -14,11 +14,17 @@ import numpy as np
 try:
     import pandas as pd
     PANDAS_AVAILABLE = True
-except ImportError:
+    logger = logging.getLogger(__name__)
+    logger.info("Pandas successfully imported for ML features")
+except ImportError as e:
     PANDAS_AVAILABLE = False
-    logging.warning("Pandas not available. ML features will be limited.")
+    logger = logging.getLogger(__name__)
+    logger.warning(f"Pandas not available: {e}. ML features will be limited.")
+except Exception as e:
+    PANDAS_AVAILABLE = False
+    logger = logging.getLogger(__name__)
+    logger.warning(f"Pandas import error: {e}. ML features will be limited.")
 
-logger = logging.getLogger(__name__)
 
 class InventoryAnalytics:
     def __init__(self):
