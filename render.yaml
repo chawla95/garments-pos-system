@@ -1,18 +1,22 @@
 services:
   - type: web
-    name: garments-pos-backend
+    name: garments-pos-api
     env: python
     plan: free
     buildCommand: |
       python -m pip install --upgrade pip
-      pip install --no-cache-dir --only-binary=all -r requirements.txt
+      pip install --no-cache-dir -r requirements.txt
     startCommand: |
       python setup_database.py
       uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11
       - key: DATABASE_URL
         value: # Set this to your Supabase PostgreSQL URL
       - key: SECRET_KEY
-        generateValue: true
+        value: your-secret-key-change-in-production
+      - key: ALGORITHM
+        value: HS256
       - key: ACCESS_TOKEN_EXPIRE_MINUTES
         value: 30 

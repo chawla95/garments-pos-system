@@ -104,9 +104,9 @@ class PreDeploymentTester:
             "jinja2"
         ]
         
-        # Only test asyncpg if we're in production
+        # Only test psycopg2 if we're in production
         if self.is_production:
-            critical_modules.append("asyncpg")
+            critical_modules.append("psycopg2")
         
         failed_imports = []
         for module in critical_modules:
