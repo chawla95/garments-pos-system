@@ -191,6 +191,63 @@ def get_users_debug(db: Session = Depends(database.get_db)):
     except Exception as e:
         return {"error": str(e)}
 
+@app.post("/debug/create-all-users")
+def create_all_users_debug(db: Session = Depends(database.get_db)):
+    """Debug endpoint to create all test users"""
+    try:
+        users_created = []
+        
+        # Create admin user
+        admin_user = db.query(models.User).filter(models.User.username == "admin").first()
+        if not admin_user:
+            hashed_password = auth.get_password_hash("admin123")
+            admin_user = models.User(
+                username="admin",
+                email="admin@pos.com",
+                hashed_password=hashed_password,
+                role=models.UserRole.ADMIN,
+                is_active=True
+            )
+            db.add(admin_user)
+            users_created.append({"username": "admin", "password": "admin123", "role": "ADMIN"})
+        
+        # Create cashier user
+        cashier_user = db.query(models.User).filter(models.User.username == "cashier").first()
+        if not cashier_user:
+            hashed_password = auth.get_password_hash("cashier123")
+            cashier_user = models.User(
+                username="cashier",
+                email="cashier@pos.com",
+                hashed_password=hashed_password,
+                role=models.UserRole.CASHIER,
+                is_active=True
+            )
+            db.add(cashier_user)
+            users_created.append({"username": "cashier", "password": "cashier123", "role": "CASHIER"})
+        
+        # Create inventory user
+        inventory_user = db.query(models.User).filter(models.User.username == "inventory").first()
+        if not inventory_user:
+            hashed_password = auth.get_password_hash("inventory123")
+            inventory_user = models.User(
+                username="inventory",
+                email="inventory@pos.com",
+                hashed_password=hashed_password,
+                role=models.UserRole.INVENTORY_MANAGER,
+                is_active=True
+            )
+            db.add(inventory_user)
+            users_created.append({"username": "inventory", "password": "inventory123", "role": "INVENTORY_MANAGER"})
+        
+        db.commit()
+        
+        return {
+            "message": "Users created successfully",
+            "users_created": users_created
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
 # ==================== SIZE SCALE CONSTANTS ====================
 SIZE_SCALES = {
     "ALPHA": ["XS", "S", "M", "L", "XL", "XXL", "XXXL"],
