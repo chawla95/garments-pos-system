@@ -98,10 +98,21 @@ def login_user(user_credentials: schemas.UserLogin, db: Session = Depends(databa
         expires_delta=access_token_expires
     )
     
+    # Convert user to dict for response
+    user_dict = {
+        "id": user.id,
+        "username": user.username,
+        "email": user.email,
+        "role": user.role,
+        "is_active": user.is_active,
+        "created_at": user.created_at,
+        "updated_at": user.updated_at
+    }
+    
     return {
         "access_token": access_token,
         "token_type": "bearer",
-        "user": user
+        "user": user_dict
     }
 
 @app.get("/auth/me", response_model=schemas.User)
