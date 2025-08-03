@@ -30,8 +30,9 @@ def setup_database():
 def create_initial_users():
     """Create initial admin users"""
     from sqlalchemy.orm import Session
+    from database import engine
     
-    db = Session()
+    db = Session(engine)
     try:
         # Check if users already exist
         existing_users = db.query(models.User).count()
@@ -94,10 +95,11 @@ def create_initial_users():
 def create_test_data():
     """Create test data for the POS system"""
     from sqlalchemy.orm import Session
+    from database import engine
     from datetime import datetime, timedelta
     import random
     
-    db = Session()
+    db = Session(engine)
     try:
         # Create test dealers
         dealers = [

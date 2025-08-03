@@ -11,7 +11,7 @@ services:
       - key: PYTHON_VERSION
         value: 3.11.0
       - key: DATABASE_URL
-        value: # Set this to your Railway/Supabase PostgreSQL URL
+        value: # Set this to your Supabase PostgreSQL URL
       - key: SECRET_KEY
         generateValue: true
       - key: ACCESS_TOKEN_EXPIRE_MINUTES
