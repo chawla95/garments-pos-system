@@ -3,9 +3,7 @@ services:
     name: garments-pos-backend
     env: python
     plan: free
-    buildCommand: |
-      python -m pip install --upgrade pip setuptools wheel
-      pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt
     startCommand: |
       python setup_database.py
       uvicorn main:app --host 0.0.0.0 --port $PORT
