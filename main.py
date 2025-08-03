@@ -34,9 +34,6 @@ async def startup_event():
     try:
         logger.info("🚀 Starting Garments POS System...")
         
-        # Get database session
-        db = next(database.get_db())
-        
         # Create default users if they don't exist
         default_users = [
             {
@@ -62,6 +59,19 @@ async def startup_event():
             }
         ]
         
+        # Use a separate function to handle database operations
+        await create_default_users(default_users)
+        
+        logger.info("✅ Startup complete - Default users ready!")
+        
+    except Exception as e:
+        logger.error(f"❌ Error during startup: {str(e)}")
+        # Don't raise the exception to allow the app to start
+
+async def create_default_users(default_users):
+    """Create default users in the database"""
+    db = next(database.get_db())
+    try:
         created_users = []
         for user_data in default_users:
             # Check if user already exists
@@ -89,13 +99,21 @@ async def startup_event():
         else:
             logger.info("ℹ️ All default users already exist")
             
-        logger.info("✅ Startup complete - Default users ready!")
-        
     except Exception as e:
-        logger.error(f"❌ Error during startup: {str(e)}")
-        # Don't raise the exception to allow the app to start
+        logger.error(f"❌ Error creating users: {str(e)}")
+        db.rollback()
     finally:
         db.close()
+
+# ==================== HEALTH CHECK ====================
+@app.get("/health")
+def health_check():
+    """Health check endpoint"""
+    return {
+        "status": "healthy",
+        "timestamp": datetime.now().isoformat(),
+        "version": "1.0.0"
+    }
 
 # Add CORS middleware
 app.add_middleware(
