@@ -27,94 +27,6 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# ==================== STARTUP EVENT ====================
-@app.on_event("startup")
-async def startup_event():
-    """Create default users on application startup"""
-    try:
-        logger.info("🚀 Starting Garments POS System...")
-        
-        # Create default users if they don't exist
-        default_users = [
-            {
-                "username": "admin",
-                "email": "admin@pos.com",
-                "password": "admin123",
-                "role": models.UserRole.ADMIN,
-                "is_active": True
-            },
-            {
-                "username": "cashier",
-                "email": "cashier@pos.com", 
-                "password": "cashier123",
-                "role": models.UserRole.CASHIER,
-                "is_active": True
-            },
-            {
-                "username": "inventory",
-                "email": "inventory@pos.com",
-                "password": "inventory123", 
-                "role": models.UserRole.INVENTORY_MANAGER,
-                "is_active": True
-            }
-        ]
-        
-        # Use a separate function to handle database operations
-        await create_default_users(default_users)
-        
-        logger.info("✅ Startup complete - Default users ready!")
-        
-    except Exception as e:
-        logger.error(f"❌ Error during startup: {str(e)}")
-        # Don't raise the exception to allow the app to start
-
-async def create_default_users(default_users):
-    """Create default users in the database"""
-    db = next(database.get_db())
-    try:
-        created_users = []
-        for user_data in default_users:
-            # Check if user already exists
-            existing_user = db.query(models.User).filter(models.User.username == user_data["username"]).first()
-            if not existing_user:
-                # Create new user
-                hashed_password = auth.get_password_hash(user_data["password"])
-                new_user = models.User(
-                    username=user_data["username"],
-                    email=user_data["email"],
-                    hashed_password=hashed_password,
-                    role=user_data["role"],
-                    is_active=user_data["is_active"]
-                )
-                db.add(new_user)
-                created_users.append(user_data["username"])
-                logger.info(f"✅ Created user: {user_data['username']}")
-            else:
-                logger.info(f"ℹ️ User already exists: {user_data['username']}")
-        
-        db.commit()
-        
-        if created_users:
-            logger.info(f"🎉 Created {len(created_users)} new users: {', '.join(created_users)}")
-        else:
-            logger.info("ℹ️ All default users already exist")
-            
-    except Exception as e:
-        logger.error(f"❌ Error creating users: {str(e)}")
-        db.rollback()
-    finally:
-        db.close()
-
-# ==================== HEALTH CHECK ====================
-@app.get("/health")
-def health_check():
-    """Health check endpoint"""
-    return {
-        "status": "healthy",
-        "timestamp": datetime.now().isoformat(),
-        "version": "1.0.0"
-    }
-
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
@@ -135,6 +47,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ==================== HEALTH CHECK ====================
+@app.get("/health")
+def health_check():
+    """Health check endpoint"""
+    return {
+        "status": "healthy",
+        "timestamp": datetime.now().isoformat(),
+        "version": "1.0.0"
+    }
 
 # ==================== FAVICON ENDPOINT ====================
 @app.get("/favicon.ico")

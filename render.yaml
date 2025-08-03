@@ -3,64 +3,16 @@ services:
     name: garments-pos-backend
     env: python
     plan: free
-    buildCommand: |
-      echo "Starting build process..."
-      python -m pip install --upgrade pip
-      echo "Installing requirements..."
-      python -m pip install -r requirements.txt
-      echo "Creating database..."
-      python -c "from database import engine; from models import Base; Base.metadata.create_all(bind=engine)" || echo "Database creation failed but continuing..."
-      echo "Setting up admin user..."
-      python create_admin.py || echo "Admin setup failed but continuing..."
-      echo "Setting up test data..."
-      python setup_test_data.py || echo "Test data setup failed but continuing..."
-      echo "Build completed successfully!"
-    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    buildCommand: pip install -r requirements.txt
+    startCommand: |
+      python setup_database.py
+      uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
-      # Database Configuration
+      - key: PYTHON_VERSION
+        value: 3.11.0
       - key: DATABASE_URL
-        value: sqlite:////tmp/pos_system.db
-      
-      # Security Configuration
+        value: # Set this to your Railway/Supabase PostgreSQL URL
       - key: SECRET_KEY
         generateValue: true
-      - key: ALGORITHM
-        value: "HS256"
       - key: ACCESS_TOKEN_EXPIRE_MINUTES
-        value: "30"
-      
-      # WhatsApp Business API Configuration (Optional)
-      - key: INTERAKT_API_KEY
-        value: ""
-      - key: INTERAKT_API_SECRET
-        value: ""
-      - key: INTERAKT_PHONE_NUMBER_ID
-        value: ""
-      - key: INTERAKT_BUSINESS_ACCOUNT_ID
-        value: ""
-      
-      # Shop Configuration
-      - key: SHOP_NAME
-        value: "Garments POS Store"
-      - key: SHOP_ADDRESS
-        value: "123 Main Street, City, State 12345"
-      - key: SHOP_PHONE
-        value: "+91-9876543210"
-      - key: SHOP_EMAIL
-        value: "info@garmentspos.com"
-      - key: SHOP_GSTIN
-        value: "22AAAAA0000A1Z5"
-      
-      # Business Settings
-      - key: DEFAULT_GST_RATE
-        value: "12.0"
-      - key: DEFAULT_CURRENCY
-        value: "INR"
-      
-      # Application Settings
-      - key: ENVIRONMENT
-        value: "production"
-      - key: DEBUG
-        value: "false"
-      - key: LOG_LEVEL
-        value: "info" 
+        value: 30 
