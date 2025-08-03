@@ -8,7 +8,7 @@ setup(
     install_requires=[
         "fastapi==0.95.2",
         "uvicorn[standard]==0.24.0",
-        "sqlalchemy==2.0.25",
+        "sqlalchemy==1.4.57",
         "python-jose[cryptography]==3.3.0",
         "passlib[bcrypt]==1.7.4",
         "python-multipart==0.0.6",
