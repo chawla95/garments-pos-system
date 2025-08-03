@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 from typing import List, Optional
 import datetime
 from models import UserRole
@@ -241,7 +241,7 @@ class ReturnResponse(BaseModel):
 # User Schemas
 class UserBase(BaseModel):
     username: str
-    email: EmailStr
+    email: str
     role: UserRole = UserRole.CASHIER
 
 class UserCreate(UserBase):
