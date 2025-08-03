@@ -1,6 +1,7 @@
 import os
 from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 from config import settings
 
 # Database URL configuration
@@ -12,28 +13,23 @@ if not DATABASE_URL:
 
 # External database (Supabase)
 if DATABASE_URL.startswith("postgres://"):
-    # Convert postgres:// to postgresql+psycopg:// for psycopg3
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg://", 1)
-elif not DATABASE_URL.startswith("postgresql+psycopg://"):
-    # Ensure we're using psycopg3
-    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg://", 1)
+    # Convert postgres:// to postgresql:// for SQLAlchemy
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 SQLALCHEMY_DATABASE_URL = DATABASE_URL
 
-# Create database engine with proper connection pooling
+# Create database engine
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
-    # Connection pool settings
-    pool_size=5,
-    max_overflow=10,
+    # PostgreSQL connection settings
     pool_pre_ping=True,
-    pool_recycle=3600
+    pool_recycle=300
 )
 
-# Create session factory
+# Create SessionLocal class
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Create declarative base
+# Create Base class
 Base = declarative_base()
 
 # Dependency to get database session

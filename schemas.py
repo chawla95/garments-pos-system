@@ -1,14 +1,7 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, EmailStr
 from typing import List, Optional
 import datetime
 from models import UserRole
-import re
-
-# Email validation function
-def validate_email(email: str) -> str:
-    if email and not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-        raise ValueError("Invalid email format")
-    return email
 
 # Dealer Schemas
 class DealerBase(BaseModel):
@@ -29,6 +22,7 @@ class Dealer(DealerBase):
 # Brand Schemas
 class BrandBase(BaseModel):
     name: str
+    description: Optional[str] = None
 
 class BrandCreate(BrandBase):
     pass
@@ -41,17 +35,20 @@ class Brand(BrandBase):
 
 # Product Schemas
 class ProductBase(BaseModel):
-    brand_id: int
-    type: str
-    size_type: str = "ALPHA"  # ALPHA, NUMERIC, or CUSTOM
-    gst_rate: float = 12.0  # GST rate for this product (default 12%)
+    name: str
+    description: Optional[str] = None
+    price: float
+    stock_quantity: int
+    category: str
+    brand: Optional[str] = None
 
 class ProductCreate(ProductBase):
     pass
 
 class Product(ProductBase):
     id: int
-    name: str  # Auto-generated: Brand-Type
+    created_at: datetime.datetime
+    updated_at: datetime.datetime
     
     class Config:
         orm_mode = True
@@ -241,15 +238,11 @@ class ReturnResponse(BaseModel):
     return_record: Return
     message: str
 
-# Authentication Schemas
+# User Schemas
 class UserBase(BaseModel):
     username: str
-    email: str
+    email: EmailStr
     role: UserRole = UserRole.CASHIER
-    
-    @validator('email')
-    def validate_email(cls, v):
-        return validate_email(v)
 
 class UserCreate(UserBase):
     password: str
@@ -258,7 +251,6 @@ class User(UserBase):
     id: int
     is_active: bool
     created_at: datetime.datetime
-    updated_at: Optional[datetime.datetime] = None
     
     class Config:
         orm_mode = True
