@@ -13,6 +13,7 @@ from ml_forecasting import InventoryOptimizer
 from whatsapp_service import whatsapp_service
 from rbac_service import rbac_service
 from config import settings
+from error_handler import setup_error_handlers, health_check as error_health_check, validate_dependencies, validate_database_connection
 import logging
 
 # Configure logging
@@ -51,12 +52,30 @@ app.add_middleware(
 # ==================== HEALTH CHECK ====================
 @app.get("/health")
 def health_check():
-    """Health check endpoint"""
-    return {
-        "status": "healthy",
-        "timestamp": datetime.now().isoformat(),
-        "version": "1.0.0"
-    }
+    """Comprehensive health check endpoint with dependency validation"""
+    try:
+        # Validate dependencies
+        validate_dependencies()
+        
+        # Validate database connection
+        validate_database_connection()
+        
+        return {
+            "status": "healthy",
+            "timestamp": datetime.now().isoformat(),
+            "version": "1.0.0",
+            "dependencies": "ok",
+            "database": "ok"
+        }
+    except Exception as e:
+        logger.error(f"Health check failed: {e}")
+        return {
+            "status": "unhealthy",
+            "timestamp": datetime.now().isoformat(),
+            "version": "1.0.0",
+            "error": str(e),
+            "type": type(e).__name__
+        }
 
 # ==================== FAVICON ENDPOINT ====================
 @app.get("/favicon.ico")
@@ -2714,4 +2733,12 @@ def update_shop_config(
             "shop_gstin": settings.SHOP_GSTIN
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error updating shop config: {str(e)}") 
+        raise HTTPException(status_code=500, detail=f"Error updating shop config: {str(e)}")
+
+# ==================== ERROR HANDLER SETUP ====================
+# Setup comprehensive error handling
+setup_error_handlers(app)
+
+# Log application startup
+logger.info("Garments POS System API started successfully")
+logger.info("Error handling system initialized") 
