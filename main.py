@@ -172,6 +172,25 @@ def create_admin_debug(db: Session = Depends(database.get_db)):
     except Exception as e:
         return {"error": str(e)}
 
+@app.get("/debug/users")
+def get_users_debug(db: Session = Depends(database.get_db)):
+    """Debug endpoint to list all users"""
+    try:
+        users = db.query(models.User).all()
+        user_list = []
+        for user in users:
+            user_list.append({
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+                "role": user.role.value,
+                "is_active": user.is_active,
+                "hashed_password": user.hashed_password[:20] + "..." if user.hashed_password else None
+            })
+        return {"users": user_list, "count": len(user_list)}
+    except Exception as e:
+        return {"error": str(e)}
+
 # ==================== SIZE SCALE CONSTANTS ====================
 SIZE_SCALES = {
     "ALPHA": ["XS", "S", "M", "L", "XL", "XXL", "XXXL"],
