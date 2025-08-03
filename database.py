@@ -28,10 +28,11 @@ engine = create_engine(
     max_overflow=10,
     pool_pre_ping=True,
     pool_recycle=3600,
-    # Disable prepared statements for psycopg3 to avoid conflicts
+    # psycopg3 connection settings
     connect_args={
-        "prepared_statement_cache_size": 0,
-        "prepared_statement_name_func": lambda: None
+        "server_settings": {
+            "jit": "off"
+        }
     }
 )
 
