@@ -4,14 +4,14 @@ services:
     env: python
     plan: free
     buildCommand: |
-      python3.11 -m pip install --upgrade pip setuptools wheel
-      python3.11 -m pip install -r requirements.txt
+      python -m pip install --upgrade pip setuptools wheel
+      pip install -r requirements.txt
     startCommand: |
-      python3.11 setup_database.py
-      python3.11 -m uvicorn main:app --host 0.0.0.0 --port $PORT
+      python setup_database.py
+      uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.0
+        value: 3.10.12
       - key: DATABASE_URL
         value: # Set this to your Supabase PostgreSQL URL
       - key: SECRET_KEY
