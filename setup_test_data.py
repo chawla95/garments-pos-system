@@ -18,41 +18,66 @@ def setup_test_data():
     
     print("🔧 Setting up complete test data...")
     
+    # Check if data already exists
+    existing_dealers = db.query(models.Dealer).count()
+    existing_brands = db.query(models.Brand).count()
+    existing_products = db.query(models.Product).count()
+    
+    if existing_dealers > 0 and existing_brands > 0 and existing_products > 0:
+        print("✅ Test data already exists, skipping setup...")
+        return
+    
     # Create dealers
     dealers = []
     dealer_names = ["Fashion House Ltd", "Trendy Garments", "Style Mart"]
     for i, name in enumerate(dealer_names):
-        dealer = models.Dealer(
-            name=name,
-            pan=f"PAN{i+1}23456789",
-            gst=f"GST{i+1}23456789012",
-            address=f"Address {i+1}, City {i+1}"
-        )
-        db.add(dealer)
-        dealers.append(dealer)
+        # Check if dealer already exists
+        existing_dealer = db.query(models.Dealer).filter(models.Dealer.name == name).first()
+        if existing_dealer:
+            dealers.append(existing_dealer)
+        else:
+            dealer = models.Dealer(
+                name=name,
+                pan=f"PAN{i+1}23456789",
+                gst=f"GST{i+1}23456789012",
+                address=f"Address {i+1}, City {i+1}"
+            )
+            db.add(dealer)
+            dealers.append(dealer)
     
     db.commit()
-    print("✅ Created 3 dealers")
+    print("✅ Created/verified 3 dealers")
     
     # Create brands
     brands = []
     brand_names = ["Nike", "Adidas", "Puma", "Reebok", "Under Armour"]
     for i, name in enumerate(brand_names):
-        brand = models.Brand(name=name)
-        db.add(brand)
-        brands.append(brand)
+        # Check if brand already exists
+        existing_brand = db.query(models.Brand).filter(models.Brand.name == name).first()
+        if existing_brand:
+            brands.append(existing_brand)
+        else:
+            brand = models.Brand(name=name)
+            db.add(brand)
+            brands.append(brand)
     
     db.commit()
-    print("✅ Created 5 brands")
+    print("✅ Created/verified 5 brands")
     
-    # Link dealers to brands
+    # Link dealers to brands (only if not already linked)
     for i, brand in enumerate(brands):
         dealer = dealers[i % len(dealers)]
-        dealer_brand = models.DealerBrand(
-            dealer_id=dealer.id,
-            brand_id=brand.id
-        )
-        db.add(dealer_brand)
+        existing_link = db.query(models.DealerBrand).filter(
+            models.DealerBrand.dealer_id == dealer.id,
+            models.DealerBrand.brand_id == brand.id
+        ).first()
+        
+        if not existing_link:
+            dealer_brand = models.DealerBrand(
+                dealer_id=dealer.id,
+                brand_id=brand.id
+            )
+            db.add(dealer_brand)
     
     db.commit()
     print("✅ Linked dealers to brands")
@@ -62,103 +87,122 @@ def setup_test_data():
     product_types = ["T-Shirt", "Jeans", "Shirt", "Hoodie", "Sweater"]
     for i, brand in enumerate(brands):
         for j, product_type in enumerate(product_types):
-            product = models.Product(
-                name=f"{brand.name}-{product_type}",
-                brand_id=brand.id,
-                type=product_type,
-                size_type="ALPHA",
-                gst_rate=12.0
-            )
-            db.add(product)
-            products.append(product)
-    
-    db.commit()
-    print("✅ Created 25 products")
-    
-    # Create inventory items
-    for i, product in enumerate(products):
-        for j in range(10):  # 10 inventory items per product
-            inventory_item = models.InventoryItem(
-                product_id=product.id,
-                barcode=f"INV{i}{j:02d}",
-                design_number=f"DES{i}{j:02d}",
-                size=random.choice(["S", "M", "L", "XL"]),
-                color=random.choice(["Blue", "Red", "Black", "White", "Green"]),
-                cost_price=100.0 + (i * 5) + (j * 2),
-                mrp=200.0 + (i * 10) + (j * 5),
-                quantity=1
-            )
-            db.add(inventory_item)
-    
-    db.commit()
-    print("✅ Created 250 inventory items")
-    
-    # Create test sales data
-    base_date = datetime.now() - timedelta(days=90)
-    
-    for i, product in enumerate(products):
-        # Create different sales patterns
-        if i < 5:  # High demand products
-            sales_pattern = [2, 3, 1, 4, 2, 3, 1, 2, 3, 4, 2, 1, 3, 2, 4, 1, 2, 3, 4, 2, 1, 3, 2, 4, 1, 2, 3, 4, 2, 1]
-        elif i < 10:  # Slow moving products
-            sales_pattern = [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0]
-        else:  # Normal products
-            sales_pattern = [1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0]
-        
-        # Create invoices for the past 30 days
-        for day in range(30):
-            if sales_pattern[day] > 0:
-                # Create invoice
-                invoice = models.Invoice(
-                    invoice_number=f"TEST-INV-{i}-{day}",
-                    customer_name=f"Test Customer {day}",
-                    customer_phone="+91 98765 43210",
-                    customer_email=f"test{day}@example.com",
-                    total_mrp=sales_pattern[day] * 200.0,
-                    total_discount=0,
-                    total_final_price=sales_pattern[day] * 200.0,
-                    total_base_amount=sales_pattern[day] * 178.57,
-                    total_gst_amount=sales_pattern[day] * 21.43,
-                    total_cgst_amount=sales_pattern[day] * 10.71,
-                    total_sgst_amount=sales_pattern[day] * 10.71,
-                    payment_method="CASH",
-                    created_at=base_date + timedelta(days=day)
+            product_name = f"{brand.name}-{product_type}"
+            # Check if product already exists
+            existing_product = db.query(models.Product).filter(
+                models.Product.name == product_name,
+                models.Product.brand_id == brand.id
+            ).first()
+            
+            if existing_product:
+                products.append(existing_product)
+            else:
+                product = models.Product(
+                    name=product_name,
+                    brand_id=brand.id,
+                    type=product_type,
+                    size_type="ALPHA",
+                    gst_rate=12.0
                 )
-                db.add(invoice)
-                db.flush()
-                
-                # Create invoice item
-                inventory_item = db.query(models.InventoryItem).filter(
-                    models.InventoryItem.product_id == product.id
-                ).first()
-                
-                if inventory_item:
-                    invoice_item = models.InvoiceItem(
-                        invoice_id=invoice.id,
-                        inventory_item_id=inventory_item.id,
-                        barcode=inventory_item.barcode,
-                        product_name=product.name,
-                        design_number=inventory_item.design_number,
-                        size=inventory_item.size,
-                        color=inventory_item.color,
-                        unit_price=200.0,
-                        quantity=sales_pattern[day],
-                        total_price=sales_pattern[day] * 200.0,
-                        discount_amount=0,
-                        final_price=sales_pattern[day] * 200.0,
-                        base_price=sales_pattern[day] * 178.57,
-                        gst_amount=sales_pattern[day] * 21.43,
-                        cgst_amount=sales_pattern[day] * 10.71,
-                        sgst_amount=sales_pattern[day] * 10.71,
-                        gst_rate=12.0
-                    )
-                    db.add(invoice_item)
-                    
-                    # Update inventory
-                    inventory_item.quantity = max(0, inventory_item.quantity - sales_pattern[day])
+                db.add(product)
+                products.append(product)
     
     db.commit()
-    print("✅ Created test sales data")
+    print("✅ Created/verified 25 products")
+    
+    # Create inventory items (only if they don't exist)
+    existing_inventory = db.query(models.InventoryItem).count()
+    if existing_inventory == 0:
+        for i, product in enumerate(products):
+            for j in range(10):  # 10 inventory items per product
+                inventory_item = models.InventoryItem(
+                    product_id=product.id,
+                    barcode=f"INV{i}{j:02d}",
+                    design_number=f"DES{i}{j:02d}",
+                    size=random.choice(["S", "M", "L", "XL"]),
+                    color=random.choice(["Blue", "Red", "Black", "White", "Green"]),
+                    cost_price=100.0 + (i * 5) + (j * 2),
+                    mrp=200.0 + (i * 10) + (j * 5),
+                    quantity=1
+                )
+                db.add(inventory_item)
+        
+        db.commit()
+        print("✅ Created 250 inventory items")
+    else:
+        print("✅ Inventory items already exist")
+    
+    # Create test sales data (only if no sales data exists)
+    existing_invoices = db.query(models.Invoice).count()
+    if existing_invoices == 0:
+        base_date = datetime.now() - timedelta(days=90)
+        
+        for i, product in enumerate(products):
+            # Create different sales patterns
+            if i < 5:  # High demand products
+                sales_pattern = [2, 3, 1, 4, 2, 3, 1, 2, 3, 4, 2, 1, 3, 2, 4, 1, 2, 3, 4, 2, 1, 3, 2, 4, 1, 2, 3, 4, 2, 1]
+            elif i < 10:  # Slow moving products
+                sales_pattern = [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0]
+            else:  # Normal products
+                sales_pattern = [1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0]
+            
+            # Create invoices for the past 30 days
+            for day in range(30):
+                if sales_pattern[day] > 0:
+                    # Create invoice
+                    invoice = models.Invoice(
+                        invoice_number=f"TEST-INV-{i}-{day}",
+                        customer_name=f"Test Customer {day}",
+                        customer_phone="+91 98765 43210",
+                        customer_email=f"test{day}@example.com",
+                        total_mrp=sales_pattern[day] * 200.0,
+                        total_discount=0,
+                        total_final_price=sales_pattern[day] * 200.0,
+                        total_base_amount=sales_pattern[day] * 178.57,
+                        total_gst_amount=sales_pattern[day] * 21.43,
+                        total_cgst_amount=sales_pattern[day] * 10.71,
+                        total_sgst_amount=sales_pattern[day] * 10.71,
+                        payment_method="CASH",
+                        created_at=base_date + timedelta(days=day)
+                    )
+                    db.add(invoice)
+                    db.flush()
+                    
+                    # Create invoice item
+                    inventory_item = db.query(models.InventoryItem).filter(
+                        models.InventoryItem.product_id == product.id
+                    ).first()
+                    
+                    if inventory_item:
+                        invoice_item = models.InvoiceItem(
+                            invoice_id=invoice.id,
+                            inventory_item_id=inventory_item.id,
+                            barcode=inventory_item.barcode,
+                            product_name=product.name,
+                            design_number=inventory_item.design_number,
+                            size=inventory_item.size,
+                            color=inventory_item.color,
+                            unit_price=200.0,
+                            quantity=sales_pattern[day],
+                            total_price=sales_pattern[day] * 200.0,
+                            discount_amount=0,
+                            final_price=sales_pattern[day] * 200.0,
+                            base_price=sales_pattern[day] * 178.57,
+                            gst_amount=sales_pattern[day] * 21.43,
+                            cgst_amount=sales_pattern[day] * 10.71,
+                            sgst_amount=sales_pattern[day] * 10.71,
+                            gst_rate=12.0
+                        )
+                        db.add(invoice_item)
+                        
+                        # Update inventory
+                        inventory_item.quantity = max(0, inventory_item.quantity - sales_pattern[day])
+        
+        db.commit()
+        print("✅ Created test sales data")
+    else:
+        print("✅ Sales data already exists")
+    
     print("\n📊 Test Data Summary:")
     print("   - 3 Dealers")
     print("   - 5 Brands")
