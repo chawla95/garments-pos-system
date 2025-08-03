@@ -13,11 +13,8 @@ if not DATABASE_URL:
 
 # External database (Supabase)
 if DATABASE_URL.startswith("postgres://"):
-    # Convert postgres:// to postgresql+psycopg:// for psycopg3
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg://", 1)
-elif not DATABASE_URL.startswith("postgresql+psycopg://"):
-    # Ensure we're using psycopg3
-    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg://", 1)
+    # Convert postgres:// to postgresql:// for SQLAlchemy
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 SQLALCHEMY_DATABASE_URL = DATABASE_URL
 
