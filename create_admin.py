@@ -17,11 +17,12 @@ def create_admin_user():
     """Create the initial admin user"""
     db = next(get_db())
     
-    # Check if admin user already exists
+    # Check if admin user already exists and delete it to recreate
     admin_user = db.query(models.User).filter(models.User.username == "admin").first()
     if admin_user:
-        print("Admin user already exists!")
-        return
+        print("Admin user already exists! Deleting and recreating...")
+        db.delete(admin_user)
+        db.commit()
     
     # Create admin user
     hashed_password = auth.get_password_hash("admin123")

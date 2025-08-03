@@ -128,6 +128,39 @@ def read_root():
         "redoc": "/redoc"
     }
 
+# ==================== DEBUG ENDPOINT ====================
+@app.post("/debug/create-admin")
+def create_admin_debug(db: Session = Depends(database.get_db)):
+    """Debug endpoint to create admin user"""
+    try:
+        # Check if admin user already exists
+        admin_user = db.query(models.User).filter(models.User.username == "admin").first()
+        if admin_user:
+            return {"message": "Admin user already exists", "username": "admin", "password": "admin123"}
+        
+        # Create admin user
+        hashed_password = auth.get_password_hash("admin123")
+        admin_user = models.User(
+            username="admin",
+            email="admin@pos.com",
+            hashed_password=hashed_password,
+            role=models.UserRole.ADMIN,
+            is_active=True
+        )
+        
+        db.add(admin_user)
+        db.commit()
+        db.refresh(admin_user)
+        
+        return {
+            "message": "Admin user created successfully",
+            "username": "admin",
+            "password": "admin123",
+            "role": "ADMIN"
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
 # ==================== SIZE SCALE CONSTANTS ====================
 SIZE_SCALES = {
     "ALPHA": ["XS", "S", "M", "L", "XL", "XXL", "XXXL"],
