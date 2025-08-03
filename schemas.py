@@ -1,7 +1,14 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, validator
 from typing import List, Optional
 import datetime
 from models import UserRole
+import re
+
+# Email validation function
+def validate_email(email: str) -> str:
+    if email and not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+        raise ValueError("Invalid email format")
+    return email
 
 # Dealer Schemas
 class DealerBase(BaseModel):
@@ -237,8 +244,12 @@ class ReturnResponse(BaseModel):
 # Authentication Schemas
 class UserBase(BaseModel):
     username: str
-    email: EmailStr
+    email: str
     role: UserRole = UserRole.CASHIER
+    
+    @validator('email')
+    def validate_email(cls, v):
+        return validate_email(v)
 
 class UserCreate(UserBase):
     password: str
