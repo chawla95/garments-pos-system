@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Return Receipt - {{ return_record.return_number }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1cm;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #d32f2f;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .shop-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #d32f2f;
+        }
+        
+        .shop-details {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .return-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .items-table th,
+        .items-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .items-table th {
+            background-color: #ffebee;
+            font-weight: bold;
+            color: #d32f2f;
+        }
+        
+        .summary {
+            border-top: 2px solid #d32f2f;
+            padding-top: 10px;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .total-row {
+            font-weight: bold;
+            font-size: 16px;
+            border-top: 1px solid #d32f2f;
+            padding-top: 10px;
+            margin-top: 10px;
+            color: #d32f2f;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+        }
+        
+        .gst-breakdown {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #ffebee;
+            border-radius: 5px;
+        }
+        
+        .gst-breakdown h4 {
+            margin: 0 0 10px 0;
+            color: #d32f2f;
+        }
+        
+        .gst-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3px;
+            font-size: 11px;
+        }
+        
+        .return-method {
+            background-color: #e8f5e8;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="shop-name">FASHION GARMENTS</div>
+        <div class="shop-details">123 Fashion Street, Mumbai - 400001</div>
+        <div class="shop-details">Phone: +91 98765 43210 | Email: info@fashiongarments.com</div>
+        <div class="shop-details">GSTIN: 27ABCDE1234F1Z5</div>
+    </div>
+    
+    <div class="return-info">
+        <div>
+            <strong>Return To:</strong><br>
+            {% if return_record.customer_name %}
+                {{ return_record.customer_name }}<br>
+                {% if return_record.customer_phone %}Phone: {{ return_record.customer_phone }}<br>{% endif %}
+                {% if return_record.customer_email %}Email: {{ return_record.customer_email }}{% endif %}
+            {% else %}
+                Walk-in Customer
+            {% endif %}
+        </div>
+        <div>
+            <strong>Return Number:</strong> {{ return_record.return_number }}<br>
+            <strong>Original Invoice:</strong> {{ return_record.invoice_number }}<br>
+            <strong>Date:</strong> {{ return_record.created_at.strftime('%d/%m/%Y') }}<br>
+            <strong>Time:</strong> {{ return_record.created_at.strftime('%H:%M:%S') }}<br>
+            <strong>Return Method:</strong> {{ return_record.return_method }}
+        </div>
+    </div>
+    
+    {% if return_record.return_reason %}
+    <div style="margin-bottom: 20px; padding: 10px; background-color: #fff3cd; border-radius: 5px;">
+        <strong>Return Reason:</strong> {{ return_record.return_reason }}
+    </div>
+    {% endif %}
+    
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th>Sr. No.</th>
+                <th>Product</th>
+                <th>Design No.</th>
+                <th>Size</th>
+                <th>Color</th>
+                <th>Original Qty</th>
+                <th>Return Qty</th>
+                <th>Unit Price</th>
+                <th>Return Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in return_record.items %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ item.product_name }}</td>
+                <td>{{ item.design_number }}</td>
+                <td>{{ item.size }}</td>
+                <td>{{ item.color }}</td>
+                <td>{{ item.original_quantity }}</td>
+                <td>{{ item.return_quantity }}</td>
+                <td>Rs. {{ "%.2f"|format(item.unit_price) }}</td>
+                <td>Rs. {{ "%.2f"|format(item.total_return_price) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div class="summary">
+        <div class="summary-row">
+            <span>Total Return Amount:</span>
+            <span>Rs. {{ "%.2f"|format(return_record.total_return_amount) }}</span>
+        </div>
+        
+        <div class="gst-breakdown">
+            <h4>GST Return Breakdown:</h4>
+            <div class="gst-row">
+                <span>Base Amount (ex-GST):</span>
+                <span>Rs. {{ "%.2f"|format(return_record.total_return_amount - return_record.total_return_gst) }}</span>
+            </div>
+            <div class="gst-row">
+                <span>CGST (6%):</span>
+                <span>Rs. {{ "%.2f"|format(return_record.total_return_cgst) }}</span>
+            </div>
+            <div class="gst-row">
+                <span>SGST (6%):</span>
+                <span>Rs. {{ "%.2f"|format(return_record.total_return_sgst) }}</span>
+            </div>
+            <div class="gst-row">
+                <span>Total GST Return:</span>
+                <span>Rs. {{ "%.2f"|format(return_record.total_return_gst) }}</span>
+            </div>
+        </div>
+        
+        <div class="return-method">
+            <h4>Return Method Details:</h4>
+            {% if return_record.return_method == "CASH" %}
+                <div class="gst-row">
+                    <span>Cash Refund:</span>
+                    <span>Rs. {{ "%.2f"|format(return_record.cash_refund) }}</span>
+                </div>
+            {% elif return_record.return_method == "WALLET" %}
+                <div class="gst-row">
+                    <span>Wallet Credit:</span>
+                    <span>Rs. {{ "%.2f"|format(return_record.wallet_credit) }}</span>
+                </div>
+            {% elif return_record.return_method == "STORE_CREDIT" %}
+                <div class="gst-row">
+                    <span>Store Credit:</span>
+                    <span>Rs. {{ "%.2f"|format(return_record.wallet_credit) }}</span>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="total-row">
+            <span>TOTAL RETURN AMOUNT:</span>
+            <span>Rs. {{ "%.2f"|format(abs(return_record.total_return_amount)) }}</span>
+        </div>
+    </div>
+    
+    {% if return_record.notes %}
+    <div style="margin-top: 20px;">
+        <strong>Notes:</strong> {{ return_record.notes }}
+    </div>
+    {% endif %}
+    
+    <div class="footer">
+        <p>Thank you for your business!</p>
+        <p>This is a computer generated return receipt. No signature required.</p>
+        <p>For any queries, please contact us at +91 98765 43210</p>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice - {{ invoice.invoice_number }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1cm;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .shop-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .shop-details {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .invoice-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .customer-info {
+            margin-bottom: 20px;
+        }
+        
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .items-table th,
+        .items-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .items-table th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+        
+        .summary {
+            border-top: 2px solid #333;
+            padding-top: 10px;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .total-row {
+            font-weight: bold;
+            font-size: 16px;
+            border-top: 1px solid #333;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+        }
+        
+        .gst-breakdown {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        
+        .gst-breakdown h4 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        
+        .gst-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3px;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="shop-name">FASHION GARMENTS</div>
+        <div class="shop-details">123 Fashion Street, Mumbai - 400001</div>
+        <div class="shop-details">Phone: +91 98765 43210 | Email: info@fashiongarments.com</div>
+        <div class="shop-details">GSTIN: 27ABCDE1234F1Z5</div>
+    </div>
+    
+    <div class="invoice-info">
+        <div>
+            <strong>Invoice To:</strong><br>
+            {% if invoice.customer_name %}
+                {{ invoice.customer_name }}<br>
+                {% if invoice.customer_phone %}Phone: {{ invoice.customer_phone }}<br>{% endif %}
+                {% if invoice.customer_email %}Email: {{ invoice.customer_email }}{% endif %}
+            {% else %}
+                Walk-in Customer
+            {% endif %}
+        </div>
+        <div>
+            <strong>Invoice Number:</strong> {{ invoice.invoice_number }}<br>
+            <strong>Date:</strong> {{ invoice.created_at.strftime('%d/%m/%Y') }}<br>
+            <strong>Time:</strong> {{ invoice.created_at.strftime('%H:%M:%S') }}<br>
+            <strong>Payment Method:</strong> {{ invoice.payment_method or 'Cash' }}
+        </div>
+    </div>
+    
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th>Sr. No.</th>
+                <th>Product</th>
+                <th>Design No.</th>
+                <th>Size</th>
+                <th>Color</th>
+                <th>MRP</th>
+                <th>Discount</th>
+                <th>Final Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in invoice.items %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ item.product_name }}</td>
+                <td>{{ item.design_number }}</td>
+                <td>{{ item.size }}</td>
+                <td>{{ item.color }}</td>
+                <td>Rs. {{ "%.2f"|format(item.total_price) }}</td>
+                <td>Rs. {{ "%.2f"|format(item.discount_amount) }}</td>
+                <td>Rs. {{ "%.2f"|format(item.final_price) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div class="summary">
+        <div class="summary-row">
+            <span>Total MRP:</span>
+            <span>Rs. {{ "%.2f"|format(invoice.total_mrp) }}</span>
+        </div>
+        {% if invoice.total_discount > 0 %}
+        <div class="summary-row">
+            <span>Total Discount:</span>
+            <span>-Rs. {{ "%.2f"|format(invoice.total_discount) }}</span>
+        </div>
+        {% endif %}
+        <div class="summary-row">
+            <span>Final Amount (GST-inclusive):</span>
+            <span>Rs. {{ "%.2f"|format(invoice.total_final_price) }}</span>
+        </div>
+        
+        <div class="gst-breakdown">
+            <h4>GST Breakdown:</h4>
+            <div class="gst-row">
+                <span>Base Amount (ex-GST):</span>
+                <span>Rs. {{ "%.2f"|format(invoice.total_base_amount) }}</span>
+            </div>
+            <div class="gst-row">
+                <span>CGST (6%):</span>
+                <span>Rs. {{ "%.2f"|format(invoice.total_cgst_amount) }}</span>
+            </div>
+            <div class="gst-row">
+                <span>SGST (6%):</span>
+                <span>Rs. {{ "%.2f"|format(invoice.total_sgst_amount) }}</span>
+            </div>
+            <div class="gst-row">
+                <span>Total GST:</span>
+                <span>Rs. {{ "%.2f"|format(invoice.total_gst_amount) }}</span>
+            </div>
+        </div>
+        
+        <div class="total-row">
+            <span>GRAND TOTAL:</span>
+            <span>Rs. {{ "%.2f"|format(invoice.total_final_price) }}</span>
+        </div>
+    </div>
+    
+    {% if invoice.notes %}
+    <div style="margin-top: 20px;">
+        <strong>Notes:</strong> {{ invoice.notes }}
+    </div>
+    {% endif %}
+    
+    <div class="footer">
+        <p>Thank you for your business!</p>
+        <p>This is a computer generated invoice. No signature required.</p>
+        <p>For any queries, please contact us at +91 98765 43210</p>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,426 @@
+{
+	"info": {
+		"_postman_id": "garments-pos-api",
+		"name": "Garments POS API",
+		"description": "Complete API collection for Garments POS System with inventory-level barcode tracking",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Root",
+			"item": [
+				{
+					"name": "Get System Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Dealers",
+			"item": [
+				{
+					"name": "Create Dealer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Fashion Supplier Ltd\",\n  \"gstin\": \"GST123456789\",\n  \"contact\": \"+91-9876543210\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/dealers/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dealers",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Dealers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/dealers/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dealers",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Dealer by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/dealers/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dealers",
+								"1"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Brands",
+			"item": [
+				{
+					"name": "Create Brand",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Nike\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/brands/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"brands",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Brands",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/brands/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"brands",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Brand by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/brands/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"brands",
+								"1"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Nike T-Shirt\",\n  \"brand_id\": 1,\n  \"design_number\": \"NK001\",\n  \"size\": \"M\",\n  \"color\": \"Blue\",\n  \"type\": \"T-Shirt\",\n  \"cost_price\": 500,\n  \"mrp\": 1200\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/products/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Product by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"1"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Inventory",
+			"item": [
+				{
+					"name": "Add Inventory Item",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"product_id\": 1,\n  \"barcode\": \"1234567890123\",\n  \"quantity\": 10\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/inventory/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inventory",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Add Second Inventory Item (Same Product)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"product_id\": 1,\n  \"barcode\": \"1234567890124\",\n  \"quantity\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/inventory/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inventory",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Inventory Items",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/inventory/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inventory",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Inventory by Product ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/inventory/product/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inventory",
+								"product",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Inventory by Barcode",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/inventory/barcode/1234567890123",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inventory",
+								"barcode",
+								"1234567890123"
+							]
+						}
+					}
+				},
+				{
+					"name": "Subtract Inventory by Barcode",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"barcode\": \"1234567890123\",\n  \"quantity\": 2\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/inventory/subtract",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inventory",
+								"subtract"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Test Cases",
+			"item": [
+				{
+					"name": "Test Duplicate Barcode (Should Fail)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"product_id\": 1,\n  \"barcode\": \"1234567890123\",\n  \"quantity\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/inventory/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inventory",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Test Insufficient Stock (Should Fail)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"barcode\": \"1234567890123\",\n  \"quantity\": 20\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/inventory/subtract",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inventory",
+								"subtract"
+							]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	]
+} 
