@@ -20,18 +20,25 @@ elif not DATABASE_URL.startswith("postgresql+psycopg://"):
 
 SQLALCHEMY_DATABASE_URL = DATABASE_URL
 
-# Create database engine
+# Create database engine with proper connection pooling
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
-    # PostgreSQL connection settings
+    # Connection pool settings
+    pool_size=5,
+    max_overflow=10,
     pool_pre_ping=True,
-    pool_recycle=300
+    pool_recycle=3600,
+    # Disable prepared statements for psycopg3 to avoid conflicts
+    connect_args={
+        "prepared_statement_cache_size": 0,
+        "prepared_statement_name_func": lambda: None
+    }
 )
 
-# Create SessionLocal class
+# Create session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Create Base class
+# Create declarative base
 Base = declarative_base()
 
 # Dependency to get database session
