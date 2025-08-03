@@ -17,7 +17,7 @@ class Dealer(DealerBase):
     id: int
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 # Brand Schemas
 class BrandBase(BaseModel):
@@ -30,7 +30,7 @@ class Brand(BrandBase):
     id: int
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 # Product Schemas
 class ProductBase(BaseModel):
@@ -47,7 +47,7 @@ class Product(ProductBase):
     name: str  # Auto-generated: Brand-Type
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 # Inventory Item Schemas
 class InventoryItemBase(BaseModel):
@@ -73,7 +73,7 @@ class InventoryItem(InventoryItemBase):
     updated_at: Optional[datetime.datetime] = None
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 # Inventory Summary Schema
 class InventorySummary(BaseModel):
@@ -84,7 +84,7 @@ class InventorySummary(BaseModel):
     inventory_items: List[InventoryItem]
     
     class Config:
-        from_attributes = True 
+        orm_mode = True 
 
 # Invoice Schemas
 class InvoiceItemBase(BaseModel):
@@ -113,7 +113,7 @@ class InvoiceItem(InvoiceItemBase):
     invoice_id: int
     created_at: datetime.datetime
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 class InvoiceBase(BaseModel):
     customer_name: Optional[str] = None
@@ -139,7 +139,7 @@ class Invoice(InvoiceBase):
     updated_at: Optional[datetime.datetime] = None
     items: List[InvoiceItem]
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 # Checkout Schemas
 class CheckoutItem(BaseModel):
@@ -186,7 +186,7 @@ class ReturnItem(ReturnItemBase):
     return_id: int
     created_at: datetime.datetime
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 class ReturnBase(BaseModel):
     invoice_id: int
@@ -214,7 +214,7 @@ class Return(ReturnBase):
     updated_at: Optional[datetime.datetime] = None
     items: List[ReturnItem]
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 # Return Request Schemas
 class ReturnItemRequest(BaseModel):
@@ -250,7 +250,7 @@ class User(UserBase):
     updated_at: Optional[datetime.datetime] = None
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 class UserLogin(BaseModel):
     username: str
@@ -281,7 +281,7 @@ class CashExpense(CashExpenseBase):
     created_at: datetime.datetime
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 class CashRegisterBase(BaseModel):
     opening_balance: float
@@ -302,7 +302,7 @@ class CashRegister(CashRegisterBase):
     expenses: List[CashExpense]
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 class CashRegisterSummary(BaseModel):
     date: str
@@ -334,7 +334,7 @@ class Customer(CustomerBase):
     updated_at: Optional[datetime.datetime] = None
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 class LoyaltyTransactionBase(BaseModel):
     transaction_type: str  # EARNED, REDEEMED, ADJUSTED
@@ -354,7 +354,7 @@ class LoyaltyTransaction(LoyaltyTransactionBase):
     created_at: datetime.datetime
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 class CustomerLoyaltyInfo(BaseModel):
     customer: Customer
@@ -413,7 +413,7 @@ class WhatsAppTemplate(WhatsAppTemplateBase):
     updated_at: Optional[datetime.datetime] = None
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 class WhatsAppLogBase(BaseModel):
     phone_number: str
@@ -436,7 +436,7 @@ class WhatsAppLog(WhatsAppLogBase):
     sent_at: datetime.datetime
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 class WhatsAppBroadcastRequest(BaseModel):
     template_id: int
@@ -467,7 +467,7 @@ class Permission(PermissionBase):
     updated_at: Optional[datetime.datetime] = None
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 class RolePermissionBase(BaseModel):
     role: UserRole
@@ -484,7 +484,7 @@ class RolePermission(RolePermissionBase):
     updated_at: Optional[datetime.datetime] = None
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 class UserPermissionBase(BaseModel):
     user_id: int
@@ -502,7 +502,7 @@ class UserPermission(UserPermissionBase):
     updated_at: Optional[datetime.datetime] = None
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 class RoleBase(BaseModel):
     name: str
@@ -519,7 +519,7 @@ class Role(RoleBase):
     permissions: List[RolePermission] = []
     
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 class UserRoleUpdate(BaseModel):
     role: UserRole
