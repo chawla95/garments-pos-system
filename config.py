@@ -6,13 +6,18 @@ import os
 from typing import Optional
 
 class Settings:
+    # Environment settings
+    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
+    DEBUG: bool = os.getenv("DEBUG", "true").lower() == "true"
+    LOG_LEVEL: str = os.getenv("LOG_LEVEL", "info")
+    
     # Database settings
     DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./pos_system.db")
     
     # JWT settings
     SECRET_KEY: str = os.getenv("SECRET_KEY", "your-secret-key-here-change-in-production")
-    ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    ALGORITHM: str = os.getenv("ALGORITHM", "HS256")
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
     
     # WhatsApp Business API settings (Interakt)
     INTERAKT_API_KEY: Optional[str] = os.getenv("INTERAKT_API_KEY", "")
@@ -33,6 +38,11 @@ class Settings:
     # Default settings
     DEFAULT_GST_RATE: float = float(os.getenv("DEFAULT_GST_RATE", "12.0"))
     DEFAULT_CURRENCY: str = os.getenv("DEFAULT_CURRENCY", "INR")
+    
+    @classmethod
+    def is_production(cls) -> bool:
+        """Check if running in production environment"""
+        return cls.ENVIRONMENT.lower() == "production"
     
     @classmethod
     def get_whatsapp_config(cls) -> dict:
