@@ -1,16 +1,23 @@
 """
-Analytics Module for Demand Forecasting and Inventory Optimization
+ML Forecasting Module for POS System
 """
 
-import pandas as pd
-import numpy as np
+import logging
+from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
-from sqlalchemy import func, and_
-import models
-from typing import List, Dict, Tuple, Optional
-import warnings
-warnings.filterwarnings('ignore')
+from models import Sale, Product, InventoryItem
+import numpy as np
+
+# Try to import pandas, but don't fail if it's not available
+try:
+    import pandas as pd
+    PANDAS_AVAILABLE = True
+except ImportError:
+    PANDAS_AVAILABLE = False
+    logging.warning("Pandas not available. ML features will be limited.")
+
+logger = logging.getLogger(__name__)
 
 class InventoryAnalytics:
     def __init__(self):
@@ -184,6 +191,126 @@ class InventoryAnalytics:
                 })
         
         return suggestions
+
+    def get_demand_forecast(self, db: Session, product_id: int, days: int = 30) -> Dict:
+        """Get demand forecast for a product"""
+        if not PANDAS_AVAILABLE:
+            return {
+                "product_id": product_id,
+                "forecast": "ML features not available (pandas required)",
+                "confidence": 0.0,
+                "recommendation": "Enable pandas for ML features"
+            }
+        
+        try:
+            # Get historical sales data
+            sales_data = db.query(Sale).filter(
+                Sale.product_id == product_id
+            ).all()
+            
+            if not sales_data:
+                return {
+                    "product_id": product_id,
+                    "forecast": "No historical data available",
+                    "confidence": 0.0,
+                    "recommendation": "Need more sales data"
+                }
+            
+            # Convert to pandas DataFrame for analysis
+            df = pd.DataFrame([
+                {
+                    'date': sale.sale_date,
+                    'quantity': sale.quantity,
+                    'amount': sale.total_amount
+                }
+                for sale in sales_data
+            ])
+            
+            # Simple moving average forecast
+            df['date'] = pd.to_datetime(df['date'])
+            df = df.set_index('date')
+            
+            # Calculate daily averages
+            daily_sales = df.groupby(df.index.date)['quantity'].sum()
+            
+            # Simple forecast using moving average
+            if len(daily_sales) >= 7:
+                forecast_quantity = daily_sales.tail(7).mean() * days
+            else:
+                forecast_quantity = daily_sales.mean() * days if len(daily_sales) > 0 else 0
+            
+            return {
+                "product_id": product_id,
+                "forecast": int(forecast_quantity),
+                "confidence": min(0.8, len(daily_sales) / 30),  # Confidence based on data amount
+                "recommendation": self._get_reorder_recommendation(forecast_quantity)
+            }
+            
+        except Exception as e:
+            logger.error(f"Error in demand forecast: {str(e)}")
+            return {
+                "product_id": product_id,
+                "forecast": "Error in calculation",
+                "confidence": 0.0,
+                "recommendation": "Check data quality"
+            }
+    
+    def get_inventory_optimization(self, db: Session) -> List[Dict]:
+        """Get inventory optimization recommendations"""
+        if not PANDAS_AVAILABLE:
+            return [{
+                "message": "ML features not available (pandas required)",
+                "type": "info"
+            }]
+        
+        try:
+            # Get all inventory items
+            inventory_items = db.query(InventoryItem).all()
+            
+            recommendations = []
+            
+            for item in inventory_items:
+                # Get demand forecast
+                forecast = self.get_demand_forecast(db, item.product_id, 30)
+                
+                if forecast.get("forecast", 0) > item.quantity:
+                    recommendations.append({
+                        "product_id": item.product_id,
+                        "product_name": item.product.name if item.product else "Unknown",
+                        "current_stock": item.quantity,
+                        "recommended_stock": int(forecast.get("forecast", 0)),
+                        "type": "low_stock",
+                        "priority": "high" if item.quantity < 5 else "medium"
+                    })
+                elif item.quantity > forecast.get("forecast", 0) * 2:
+                    recommendations.append({
+                        "product_id": item.product_id,
+                        "product_name": item.product.name if item.product else "Unknown",
+                        "current_stock": item.quantity,
+                        "recommended_stock": int(forecast.get("forecast", 0)),
+                        "type": "overstock",
+                        "priority": "medium"
+                    })
+            
+            return recommendations
+            
+        except Exception as e:
+            logger.error(f"Error in inventory optimization: {str(e)}")
+            return [{
+                "message": "Error in optimization calculation",
+                "type": "error"
+            }]
+    
+    def _get_reorder_recommendation(self, forecast_quantity: float) -> str:
+        """Get reorder recommendation based on forecast"""
+        if forecast_quantity > 50:
+            return "High demand expected - consider bulk order"
+        elif forecast_quantity > 20:
+            return "Moderate demand - maintain regular stock"
+        elif forecast_quantity > 5:
+            return "Low demand - order conservatively"
+        else:
+            return "Very low demand - consider discontinuing"
 
 # Alias for backward compatibility
 InventoryOptimizer = InventoryAnalytics 
