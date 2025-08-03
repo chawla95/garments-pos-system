@@ -18,7 +18,7 @@ setup(
         "python-barcode==0.15.1",
         "Pillow==10.4.0",
         "jinja2==3.1.2",
-        "pandas==2.1.3",
+        "pandas==2.2.0",
         "numpy==1.26.4",
         "requests==2.31.0",
         "python-dateutil==2.8.2"
