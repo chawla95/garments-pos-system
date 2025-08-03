@@ -5,25 +5,25 @@ from sqlalchemy.orm import sessionmaker
 from config import settings
 
 # Database URL configuration
-# Priority: DATABASE_URL > individual components
+# Must be set for production (Supabase)
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-if DATABASE_URL:
-    # External database (Railway, Supabase, etc.)
-    if DATABASE_URL.startswith("postgres://"):
-        # Convert postgres:// to postgresql:// for SQLAlchemy
-        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
-    
-    SQLALCHEMY_DATABASE_URL = DATABASE_URL
-else:
-    # Local SQLite database (fallback)
-    SQLALCHEMY_DATABASE_URL = "sqlite:///./pos_system.db"
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL environment variable must be set for production deployment")
+
+# External database (Supabase)
+if DATABASE_URL.startswith("postgres://"):
+    # Convert postgres:// to postgresql:// for SQLAlchemy
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+SQLALCHEMY_DATABASE_URL = DATABASE_URL
 
 # Create database engine
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
-    # For SQLite, enable foreign key support
-    connect_args={"check_same_thread": False} if "sqlite" in SQLALCHEMY_DATABASE_URL else {}
+    # PostgreSQL connection settings
+    pool_pre_ping=True,
+    pool_recycle=300
 )
 
 # Create SessionLocal class

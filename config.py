@@ -12,7 +12,7 @@ class Settings:
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "info")
     
     # Database settings
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./pos_system.db")
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "")
     
     # JWT settings
     SECRET_KEY: str = os.getenv("SECRET_KEY", "your-secret-key-here-change-in-production")

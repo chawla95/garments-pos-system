@@ -6,10 +6,8 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=sqlite:///./pos_system.db
+      - DATABASE_URL=${DATABASE_URL}
       - SECRET_KEY=your-secret-key-change-in-production
-    volumes:
-      - ./pos_system.db:/app/pos_system.db
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/"]
