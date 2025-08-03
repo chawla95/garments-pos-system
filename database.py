@@ -1,14 +1,15 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# Database URL - SQLite for development, easily switchable to PostgreSQL
-SQLALCHEMY_DATABASE_URL = "sqlite:///./pos_system.db"
+# Database URL - Use environment variable or default to SQLite
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./pos_system.db")
 
 # Create engine
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL, 
-    connect_args={"check_same_thread": False}  # Only needed for SQLite
+    connect_args={"check_same_thread": False} if "sqlite" in SQLALCHEMY_DATABASE_URL else {}
 )
 
 # Create SessionLocal class

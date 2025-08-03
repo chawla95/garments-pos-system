@@ -7,10 +7,10 @@ from typing import Optional
 
 class Settings:
     # Database settings
-    DATABASE_URL: str = "sqlite:///./pos_system.db"
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./pos_system.db")
     
     # JWT settings
-    SECRET_KEY: str = "your-secret-key-here-change-in-production"
+    SECRET_KEY: str = os.getenv("SECRET_KEY", "your-secret-key-here-change-in-production")
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
@@ -24,15 +24,15 @@ class Settings:
     WHATSAPP_ENABLED: bool = bool(INTERAKT_API_KEY and INTERAKT_API_SECRET)
     
     # Shop details for invoices
-    SHOP_NAME: str = "Your Garments Store"
-    SHOP_ADDRESS: str = "123 Main Street, City, State 12345"
-    SHOP_PHONE: str = "+91-9876543210"
-    SHOP_EMAIL: str = "info@yourstore.com"
-    SHOP_GSTIN: str = "22AAAAA0000A1Z5"  # Replace with your actual GSTIN
+    SHOP_NAME: str = os.getenv("SHOP_NAME", "Your Garments Store")
+    SHOP_ADDRESS: str = os.getenv("SHOP_ADDRESS", "123 Main Street, City, State 12345")
+    SHOP_PHONE: str = os.getenv("SHOP_PHONE", "+91-9876543210")
+    SHOP_EMAIL: str = os.getenv("SHOP_EMAIL", "info@yourstore.com")
+    SHOP_GSTIN: str = os.getenv("SHOP_GSTIN", "22AAAAA0000A1Z5")  # Replace with your actual GSTIN
     
     # Default settings
-    DEFAULT_GST_RATE: float = 12.0
-    DEFAULT_CURRENCY: str = "INR"
+    DEFAULT_GST_RATE: float = float(os.getenv("DEFAULT_GST_RATE", "12.0"))
+    DEFAULT_CURRENCY: str = os.getenv("DEFAULT_CURRENCY", "INR")
     
     @classmethod
     def get_whatsapp_config(cls) -> dict:
