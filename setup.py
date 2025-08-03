@@ -16,7 +16,7 @@ setup(
         "python-dotenv==1.0.0",
         "reportlab==4.0.7",
         "python-barcode==0.15.1",
-        "Pillow==10.1.0",
+        "Pillow==10.4.0",
         "jinja2==3.1.2",
         "pandas==2.1.3",
         "numpy==1.26.4",
