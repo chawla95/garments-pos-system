@@ -27,13 +27,7 @@ engine = create_engine(
     pool_size=5,
     max_overflow=10,
     pool_pre_ping=True,
-    pool_recycle=3600,
-    # psycopg3 connection settings
-    connect_args={
-        "server_settings": {
-            "jit": "off"
-        }
-    }
+    pool_recycle=3600
 )
 
 # Create session factory
