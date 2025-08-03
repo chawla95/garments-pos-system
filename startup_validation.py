@@ -45,8 +45,7 @@ def validate_dependencies() -> bool:
         "fastapi",
         "uvicorn",
         "sqlalchemy",
-        "pydantic",
-        "psycopg2-binary"
+        "pydantic"
     ]
     
     missing_packages = []
@@ -55,6 +54,17 @@ def validate_dependencies() -> bool:
             __import__(package.replace("-", "_"))
         except ImportError:
             missing_packages.append(package)
+    
+    # Special check for PostgreSQL driver
+    try:
+        import psycopg2
+        logger.info("✅ PostgreSQL driver (psycopg2) found")
+    except ImportError:
+        try:
+            import psycopg2_binary
+            logger.info("✅ PostgreSQL driver (psycopg2-binary) found")
+        except ImportError:
+            missing_packages.append("psycopg2-binary")
     
     if missing_packages:
         logger.error(f"❌ Missing packages: {missing_packages}")

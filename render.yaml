@@ -5,7 +5,6 @@ services:
     plan: free
     buildCommand: |
       pip install -r requirements.txt
-      python startup_validation.py
     startCommand: |
       python setup_database.py
       uvicorn main:app --host 0.0.0.0 --port $PORT
