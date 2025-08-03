@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: garments-pos-backend
+    env: python
+    plan: free
+    buildCommand: |
+      pip install -r requirements.txt
+      python -c "from database import engine; from models import Base; Base.metadata.create_all(bind=engine)"
+      python create_admin.py
+      python setup_test_data.py
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:///./pos_system.db
+      - key: SECRET_KEY
+        generateValue: true
+      - key: INTERAKT_API_KEY
+        value: ""
+      - key: INTERAKT_API_SECRET
+        value: ""
+      - key: INTERAKT_PHONE_NUMBER_ID
+        value: ""
+      - key: INTERAKT_BUSINESS_ACCOUNT_ID
+        value: "" 
