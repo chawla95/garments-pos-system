@@ -13,8 +13,11 @@ if not DATABASE_URL:
 
 # External database (Supabase)
 if DATABASE_URL.startswith("postgres://"):
-    # Convert postgres:// to postgresql:// for SQLAlchemy
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    # Convert postgres:// to postgresql+asyncpg:// for asyncpg
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+asyncpg://", 1)
+elif not DATABASE_URL.startswith("postgresql+asyncpg://"):
+    # Ensure we're using asyncpg
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://", 1)
 
 SQLALCHEMY_DATABASE_URL = DATABASE_URL
 
