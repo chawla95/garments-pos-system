@@ -22,7 +22,8 @@ setup(
         "requests==2.31.0",
         "python-dateutil==2.8.2",
         "cryptography==42.0.0",
-        "bcrypt==4.1.2"
+        "bcrypt==4.1.2",
+        "email-validator==2.1.0"
     ],
     python_requires=">=3.10",
 ) 
