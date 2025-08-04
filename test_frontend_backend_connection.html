@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Frontend-Backend Connection Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test { margin: 10px 0; padding: 10px; border: 1px solid #ddd; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Frontend-Backend Connection Test</h1>
+    
+    <div class="test">
+        <h3>1. Test CORS Preflight</h3>
+        <button onclick="testCORS()">Test CORS</button>
+        <div id="cors-result"></div>
+    </div>
+    
+    <div class="test">
+        <h3>2. Test Login</h3>
+        <button onclick="testLogin()">Test Login</button>
+        <div id="login-result"></div>
+    </div>
+    
+    <div class="test">
+        <h3>3. Test Invoices with Token</h3>
+        <button onclick="testInvoices()">Test Invoices</button>
+        <div id="invoices-result"></div>
+    </div>
+    
+    <div class="test">
+        <h3>4. Test Dashboard</h3>
+        <button onclick="testDashboard()">Test Dashboard</button>
+        <div id="dashboard-result"></div>
+    </div>
+
+    <script>
+        const API_URL = 'https://garments-pos-backend-92s1.onrender.com';
+        let token = null;
+
+        function log(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : '';
+            element.innerHTML += `<div class="${className}">${new Date().toLocaleTimeString()}: ${message}</div>`;
+        }
+
+        async function testCORS() {
+            const element = document.getElementById('cors-result');
+            element.innerHTML = '<h4>CORS Test Results:</h4>';
+            
+            try {
+                const response = await fetch(`${API_URL}/health`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    log('cors-result', '✅ CORS is working correctly', 'success');
+                    log('cors-result', `Backend Status: ${data.status}`);
+                    log('cors-result', `Database: ${data.database}`);
+                } else {
+                    log('cors-result', `❌ CORS test failed: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                log('cors-result', `❌ CORS error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testLogin() {
+            const element = document.getElementById('login-result');
+            element.innerHTML = '<h4>Login Test Results:</h4>';
+            
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: 'admin',
+                        password: 'admin123'
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    token = data.access_token;
+                    log('login-result', '✅ Login successful!', 'success');
+                    log('login-result', `Token: ${token.substring(0, 20)}...`);
+                } else {
+                    const error = await response.text();
+                    log('login-result', `❌ Login failed: ${error}`, 'error');
+                }
+            } catch (error) {
+                log('login-result', `❌ Login error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testInvoices() {
+            const element = document.getElementById('invoices-result');
+            element.innerHTML = '<h4>Invoices Test Results:</h4>';
+            
+            if (!token) {
+                log('invoices-result', '❌ No token available. Please login first.', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/invoices/`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    log('invoices-result', '✅ Invoices loaded successfully!', 'success');
+                    log('invoices-result', `Found ${data.length} invoices`);
+                } else {
+                    const error = await response.text();
+                    log('invoices-result', `❌ Invoices failed: ${error}`, 'error');
+                }
+            } catch (error) {
+                log('invoices-result', `❌ Invoices error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testDashboard() {
+            const element = document.getElementById('dashboard-result');
+            element.innerHTML = '<h4>Dashboard Test Results:</h4>';
+            
+            if (!token) {
+                log('dashboard-result', '❌ No token available. Please login first.', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/dashboard/sales`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    log('dashboard-result', '✅ Dashboard loaded successfully!', 'success');
+                    log('dashboard-result', `Sales data: ${JSON.stringify(data, null, 2)}`);
+                } else {
+                    const error = await response.text();
+                    log('dashboard-result', `❌ Dashboard failed: ${error}`, 'error');
+                }
+            } catch (error) {
+                log('dashboard-result', `❌ Dashboard error: ${error.message}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html> 
