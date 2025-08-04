@@ -833,7 +833,7 @@ def create_product(
     db.refresh(db_product)
     return db_product
 
-@app.get("/products/", response_model=List[schemas.Product])
+@app.get("/products/")
 def get_products(
     skip: int = 0, 
     limit: int = 100, 
@@ -853,19 +853,19 @@ def get_products(
             models.Product.updated_at
         ).offset(skip).limit(limit).all()
         
-        # Convert to Product objects
+        # Convert to simple dict format
         result = []
         for product_data in products:
-            product = models.Product()
-            product.id = product_data.id
-            product.brand_id = product_data.brand_id
-            product.type = product_data.type
-            product.size_type = product_data.size_type
-            product.gst_rate = product_data.gst_rate
-            product.name = product_data.name or f"Product-{product_data.id}"
-            product.created_at = product_data.created_at
-            product.updated_at = product_data.updated_at
-            result.append(product)
+            result.append({
+                "id": product_data.id,
+                "brand_id": product_data.brand_id,
+                "type": product_data.type,
+                "size_type": product_data.size_type,
+                "gst_rate": product_data.gst_rate,
+                "name": product_data.name or f"Product-{product_data.id}",
+                "created_at": product_data.created_at,
+                "updated_at": product_data.updated_at
+            })
         
         return result
     except Exception as e:
