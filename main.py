@@ -843,6 +843,17 @@ def get_products(
     try:
         # Query products without loading relationships to avoid potential issues
         products = db.query(models.Product).offset(skip).limit(limit).all()
+        
+        # Ensure each product has a name field
+        for product in products:
+            if not product.name:
+                # Generate name from brand and type if missing
+                brand = db.query(models.Brand).filter(models.Brand.id == product.brand_id).first()
+                if brand:
+                    product.name = f"{brand.name}-{product.type}"
+                else:
+                    product.name = f"Product-{product.id}"
+        
         return products
     except Exception as e:
         logger.error(f"Error fetching products: {e}")
