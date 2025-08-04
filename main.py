@@ -108,9 +108,10 @@ app.add_middleware(
         "http://127.0.0.1:5173",
         "https://garments-pos-frontend.onrender.com",  # Render frontend
         "https://garments-pos-system.vercel.app",      # Vercel frontend
-        "https://pos-frontend-d67i3dpx6-abhisheks-projects-f92c4bb9.vercel.app",  # Current Vercel deployment
+        "https://pos-frontend-d67i3dpx6-abhisheks-projects-f92c4bb9.vercel.app",  # Previous Vercel deployment
         "https://pos-frontend-eamd6hk64-abhisheks-projects-f92c4bb9.vercel.app",  # Previous Vercel deployment
-        "https://pos-frontend-3clnf3598-abhisheks-projects-f92c4bb9.vercel.app",  # Latest Vercel deployment
+        "https://pos-frontend-3clnf3598-abhisheks-projects-f92c4bb9.vercel.app",  # Previous Vercel deployment
+        "https://pos-frontend-final-k4io3yvya-abhisheks-projects-f92c4bb9.vercel.app",  # Current Vercel deployment
         "https://*.vercel.app",  # Allow all Vercel subdomains
         "*"  # Allow all origins in development - remove in production
     ],
