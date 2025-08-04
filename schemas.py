@@ -22,13 +22,13 @@ class Dealer(DealerBase):
 # Brand Schemas
 class BrandBase(BaseModel):
     name: str
-    description: Optional[str] = None
 
 class BrandCreate(BrandBase):
     pass
 
 class Brand(BrandBase):
     id: int
+    description: Optional[str] = None
     
     class Config:
         orm_mode = True

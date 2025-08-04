@@ -43,6 +43,7 @@ class Brand(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, nullable=False)
+    description = Column(String, nullable=True)
     products = relationship("Product", back_populates="brand")
     dealers = relationship("Dealer", secondary="dealer_brands", back_populates="brands")
 
