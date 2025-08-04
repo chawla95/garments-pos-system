@@ -840,8 +840,38 @@ def get_products(
     db: Session = Depends(database.get_db),
     current_user: models.User = Depends(auth.require_admin)
 ):
-    # Remove all dependencies except authentication
-    return {"message": "Products endpoint working", "count": 0}
+    try:
+        # Query products with specific columns to avoid relationship issues
+        products = db.query(
+            models.Product.id,
+            models.Product.brand_id,
+            models.Product.type,
+            models.Product.size_type,
+            models.Product.gst_rate,
+            models.Product.name,
+            models.Product.created_at,
+            models.Product.updated_at
+        ).offset(skip).limit(limit).all()
+        
+        # Convert to simple dict format
+        result = []
+        for product_data in products:
+            result.append({
+                "id": product_data.id,
+                "brand_id": product_data.brand_id,
+                "type": product_data.type,
+                "size_type": product_data.size_type,
+                "gst_rate": product_data.gst_rate,
+                "name": product_data.name or f"Product-{product_data.id}",
+                "created_at": product_data.created_at,
+                "updated_at": product_data.updated_at
+            })
+        
+        return result
+    except Exception as e:
+        logger.error(f"Error fetching products: {e}")
+        # Return empty list instead of crashing
+        return []
 
 @app.get("/products/{product_id}", response_model=schemas.Product)
 def get_product(
