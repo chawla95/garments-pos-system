@@ -36,6 +36,35 @@ try:
 except Exception as e:
     logger.warning(f"Database migration warning: {e}")
 
+# Ensure Product model has all required columns
+try:
+    from sqlalchemy import text
+    db = database.SessionLocal()
+    try:
+        # Check if gst_rate column exists, if not add it
+        result = db.execute(text("""
+            SELECT column_name 
+            FROM information_schema.columns 
+            WHERE table_name = 'products' AND column_name = 'gst_rate'
+        """))
+        
+        if not result.fetchone():
+            db.execute(text("""
+                ALTER TABLE products 
+                ADD COLUMN gst_rate FLOAT DEFAULT 12.0
+            """))
+            db.commit()
+            logger.info("✅ gst_rate column added to products table")
+        else:
+            logger.info("✅ gst_rate column already exists in products table")
+    except Exception as e:
+        logger.error(f"❌ Error checking/adding gst_rate column: {e}")
+        db.rollback()
+    finally:
+        db.close()
+except Exception as e:
+    logger.error(f"❌ Database connection error: {e}")
+
 app = FastAPI(
     title="Garments POS System API",
     description="A comprehensive POS system for garments retail",
