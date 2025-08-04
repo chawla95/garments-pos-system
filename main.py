@@ -116,7 +116,7 @@ app.add_middleware(
         "https://pos-frontend-final-qjuufym7g-abhisheks-projects-f92c4bb9.vercel.app",  # Previous Vercel deployment
         "https://pos-frontend-final-5sitwuwqs-abhisheks-projects-f92c4bb9.vercel.app",  # Previous Vercel deployment
         "https://pos-frontend-final-jq72ze1tt-abhisheks-projects-f92c4bb9.vercel.app",  # Previous Vercel deployment
-        "https://pos-frontend-final-gighw2gty-abhisheks-projects-f92c4bb9.vercel.app",  # Current Vercel deployment
+        "https://pos-frontend-final.vercel.app",  # Stable Vercel project URL
         "https://*.vercel.app",  # Allow all Vercel subdomains
         "*"  # Allow all origins in development - remove in production
     ],
