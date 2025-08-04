@@ -840,12 +840,8 @@ def get_products(
     db: Session = Depends(database.get_db),
     current_user: models.User = Depends(auth.require_admin)
 ):
-    try:
-        # Simple test - just return a basic response
-        return {"message": "Products endpoint working", "count": 0}
-    except Exception as e:
-        logger.error(f"Error fetching products: {e}")
-        return {"error": str(e)}
+    # Remove all dependencies except authentication
+    return {"message": "Products endpoint working", "count": 0}
 
 @app.get("/products/{product_id}", response_model=schemas.Product)
 def get_product(
