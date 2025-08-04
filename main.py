@@ -57,8 +57,35 @@ try:
             logger.info("✅ gst_rate column added to products table")
         else:
             logger.info("✅ gst_rate column already exists in products table")
+            
+        # Also check if name column exists and is not null
+        result = db.execute(text("""
+            SELECT column_name, is_nullable
+            FROM information_schema.columns 
+            WHERE table_name = 'products' AND column_name = 'name'
+        """))
+        
+        name_column = result.fetchone()
+        if not name_column:
+            db.execute(text("""
+                ALTER TABLE products 
+                ADD COLUMN name VARCHAR NOT NULL DEFAULT ''
+            """))
+            db.commit()
+            logger.info("✅ name column added to products table")
+        elif name_column[1] == 'YES':
+            # Make name column NOT NULL
+            db.execute(text("""
+                ALTER TABLE products 
+                ALTER COLUMN name SET NOT NULL
+            """))
+            db.commit()
+            logger.info("✅ name column made NOT NULL")
+        else:
+            logger.info("✅ name column already exists and is NOT NULL")
+            
     except Exception as e:
-        logger.error(f"❌ Error checking/adding gst_rate column: {e}")
+        logger.error(f"❌ Error checking/adding columns: {e}")
         db.rollback()
     finally:
         db.close()
