@@ -29,6 +29,13 @@ try:
 except Exception as e:
     logger.warning(f"Database migration warning: {e}")
 
+# Run database migration for gst_rate column
+try:
+    from add_gst_rate_column import add_gst_rate_column
+    add_gst_rate_column()
+except Exception as e:
+    logger.warning(f"Database migration warning: {e}")
+
 app = FastAPI(
     title="Garments POS System API",
     description="A comprehensive POS system for garments retail",
