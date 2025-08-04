@@ -115,7 +115,8 @@ app.add_middleware(
         "https://pos-frontend-final-r9djpf1vm-abhisheks-projects-f92c4bb9.vercel.app",  # Previous Vercel deployment
         "https://pos-frontend-final-qjuufym7g-abhisheks-projects-f92c4bb9.vercel.app",  # Previous Vercel deployment
         "https://pos-frontend-final-5sitwuwqs-abhisheks-projects-f92c4bb9.vercel.app",  # Previous Vercel deployment
-        "https://pos-frontend-final-jq72ze1tt-abhisheks-projects-f92c4bb9.vercel.app",  # Current Vercel deployment
+        "https://pos-frontend-final-jq72ze1tt-abhisheks-projects-f92c4bb9.vercel.app",  # Previous Vercel deployment
+        "https://pos-frontend-final-gighw2gty-abhisheks-projects-f92c4bb9.vercel.app",  # Current Vercel deployment
         "https://*.vercel.app",  # Allow all Vercel subdomains
         "*"  # Allow all origins in development - remove in production
     ],
@@ -1456,25 +1457,23 @@ def create_return(
                 'return_sgst': item_return_sgst
             })
         
-        # Validate return method and amounts
+        # Auto-calculate return amounts based on original invoice amounts
+        auto_calculated_amount = abs(total_return_amount)
+        
+        # Set the appropriate amount based on return method
         if return_data.return_method == "CASH":
-            if return_data.cash_refund != abs(total_return_amount):
-                raise HTTPException(
-                    status_code=400, 
-                    detail=f"Cash refund amount ({return_data.cash_refund}) must equal return amount ({abs(total_return_amount)})"
-                )
+            cash_refund_amount = auto_calculated_amount
+            wallet_credit_amount = 0
         elif return_data.return_method == "WALLET":
-            if return_data.wallet_credit != abs(total_return_amount):
-                raise HTTPException(
-                    status_code=400, 
-                    detail=f"Wallet credit amount ({return_data.wallet_credit}) must equal return amount ({abs(total_return_amount)})"
-                )
+            cash_refund_amount = 0
+            wallet_credit_amount = auto_calculated_amount
         elif return_data.return_method == "STORE_CREDIT":
-            if return_data.wallet_credit != abs(total_return_amount):
-                raise HTTPException(
-                    status_code=400, 
-                    detail=f"Store credit amount ({return_data.wallet_credit}) must equal return amount ({abs(total_return_amount)})"
-                )
+            cash_refund_amount = 0
+            wallet_credit_amount = auto_calculated_amount
+        else:
+            # Default to cash refund
+            cash_refund_amount = auto_calculated_amount
+            wallet_credit_amount = 0
         
         # Create return record
         db_return = models.Return(
@@ -1490,8 +1489,8 @@ def create_return(
             total_return_gst=total_return_gst,
             total_return_cgst=total_return_cgst,
             total_return_sgst=total_return_sgst,
-            wallet_credit=return_data.wallet_credit,
-            cash_refund=return_data.cash_refund,
+            wallet_credit=wallet_credit_amount,
+            cash_refund=cash_refund_amount,
             notes=return_data.notes
         )
         

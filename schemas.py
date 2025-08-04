@@ -229,8 +229,8 @@ class ReturnRequest(BaseModel):
     items: List[ReturnItemRequest]
     return_reason: Optional[str] = None
     return_method: str = "CASH"  # CASH, WALLET, STORE_CREDIT
-    wallet_credit: float = 0
-    cash_refund: float = 0
+    wallet_credit: Optional[float] = None  # Auto-calculated based on return method
+    cash_refund: Optional[float] = None    # Auto-calculated based on return method
     notes: Optional[str] = None
 
 class ReturnResponse(BaseModel):
