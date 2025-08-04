@@ -22,6 +22,13 @@ logger = logging.getLogger(__name__)
 # Create database tables
 models.Base.metadata.create_all(bind=database.engine)
 
+# Run database migration for description column
+try:
+    from add_description_column import add_description_column
+    add_description_column()
+except Exception as e:
+    logger.warning(f"Database migration warning: {e}")
+
 app = FastAPI(
     title="Garments POS System API",
     description="A comprehensive POS system for garments retail",
