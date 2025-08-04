@@ -35,18 +35,17 @@ class Brand(BrandBase):
 
 # Product Schemas
 class ProductBase(BaseModel):
-    name: str
-    description: Optional[str] = None
-    price: float
-    stock_quantity: int
-    category: str
-    brand: Optional[str] = None
+    brand_id: int
+    type: str
+    size_type: str = "ALPHA"
+    gst_rate: float = 12.0
 
 class ProductCreate(ProductBase):
     pass
 
 class Product(ProductBase):
     id: int
+    name: str
     created_at: datetime.datetime
     updated_at: datetime.datetime
     
