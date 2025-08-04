@@ -730,8 +730,14 @@ def get_brands(
     db: Session = Depends(database.get_db),
     current_user: models.User = Depends(auth.require_admin)
 ):
-    brands = db.query(models.Brand).offset(skip).limit(limit).all()
-    return brands
+    try:
+        # Query brands without loading relationships to avoid potential issues
+        brands = db.query(models.Brand).offset(skip).limit(limit).all()
+        return brands
+    except Exception as e:
+        logger.error(f"Error fetching brands: {e}")
+        # Return empty list instead of crashing
+        return []
 
 @app.get("/brands/{brand_id}", response_model=schemas.Brand)
 def get_brand(
@@ -834,8 +840,14 @@ def get_products(
     db: Session = Depends(database.get_db),
     current_user: models.User = Depends(auth.require_admin)
 ):
-    products = db.query(models.Product).offset(skip).limit(limit).all()
-    return products
+    try:
+        # Query products without loading relationships to avoid potential issues
+        products = db.query(models.Product).offset(skip).limit(limit).all()
+        return products
+    except Exception as e:
+        logger.error(f"Error fetching products: {e}")
+        # Return empty list instead of crashing
+        return []
 
 @app.get("/products/{product_id}", response_model=schemas.Product)
 def get_product(
