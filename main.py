@@ -841,20 +841,33 @@ def get_products(
     current_user: models.User = Depends(auth.require_admin)
 ):
     try:
-        # Query products without loading relationships to avoid potential issues
-        products = db.query(models.Product).offset(skip).limit(limit).all()
+        # Query products with specific columns to avoid relationship issues
+        products = db.query(
+            models.Product.id,
+            models.Product.brand_id,
+            models.Product.type,
+            models.Product.size_type,
+            models.Product.gst_rate,
+            models.Product.name,
+            models.Product.created_at,
+            models.Product.updated_at
+        ).offset(skip).limit(limit).all()
         
-        # Ensure each product has a name field
-        for product in products:
-            if not product.name:
-                # Generate name from brand and type if missing
-                brand = db.query(models.Brand).filter(models.Brand.id == product.brand_id).first()
-                if brand:
-                    product.name = f"{brand.name}-{product.type}"
-                else:
-                    product.name = f"Product-{product.id}"
+        # Convert to Product objects
+        result = []
+        for product_data in products:
+            product = models.Product()
+            product.id = product_data.id
+            product.brand_id = product_data.brand_id
+            product.type = product_data.type
+            product.size_type = product_data.size_type
+            product.gst_rate = product_data.gst_rate
+            product.name = product_data.name or f"Product-{product_data.id}"
+            product.created_at = product_data.created_at
+            product.updated_at = product_data.updated_at
+            result.append(product)
         
-        return products
+        return result
     except Exception as e:
         logger.error(f"Error fetching products: {e}")
         # Return empty list instead of crashing
