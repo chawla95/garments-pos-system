@@ -755,7 +755,8 @@ def create_product(
         name=product_name,
         brand_id=product.brand_id,
         type=product.type,
-        size_type=product.size_type
+        size_type=product.size_type,
+        gst_rate=product.gst_rate
     )
     db.add(db_product)
     db.commit()
