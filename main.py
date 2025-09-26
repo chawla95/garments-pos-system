@@ -117,6 +117,7 @@ app.add_middleware(
         "https://pos-frontend-final-5sitwuwqs-abhisheks-projects-f92c4bb9.vercel.app",  # Previous Vercel deployment
         "https://pos-frontend-final-jq72ze1tt-abhisheks-projects-f92c4bb9.vercel.app",  # Previous Vercel deployment
         "https://pos-frontend-final.vercel.app",  # Stable Vercel project URL
+        "https://salmon-wave-09dd6700f.2.azurestaticapps.net",  # Azure Static Web App
         "https://*.vercel.app",  # Allow all Vercel subdomains
         "*"  # Allow all origins in development - remove in production
     ],
