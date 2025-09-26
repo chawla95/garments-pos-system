@@ -36,3 +36,4 @@ jobs:
           azure_static_web_apps_api_token: 0b0e06d7a7af298e0035523c1c0084139e56ee5ff2f36a48abdf00e3dfbb6e8002-95cc4c11-2021-4919-b1e5-1b01ed0f2e0d00f112309dd6700f
           app_location: "/pos-frontend"
           output_location: "build"
+

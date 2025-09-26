@@ -13,7 +13,7 @@ const getApiUrl = () => {
   }
   
   // Default to the Azure backend
-  return 'https://garments-pos-backend.azurewebsites.net';
+  return 'https://garments-pos-backend-v2.azurewebsites.net';
 };
 
 const api = axios.create({

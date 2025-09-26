@@ -1,0 +1,288 @@
+2025-09-26T18:02:55.697342594Z    _____                               
+2025-09-26T18:02:55.698883805Z   /  _  \ __________ _________   ____  
+2025-09-26T18:02:55.698890105Z  /  /_\  \\___   /  |  \_  __ \_/ __ \ 
+2025-09-26T18:02:55.698893105Z /    |    \/    /|  |  /|  | \/\  ___/ 
+2025-09-26T18:02:55.698895905Z \____|__  /_____ \____/ |__|    \___  >
+2025-09-26T18:02:55.698898905Z         \/      \/                  \/ 
+2025-09-26T18:02:55.698901505Z A P P   S E R V I C E   O N   L I N U X
+2025-09-26T18:02:55.698904106Z 
+2025-09-26T18:02:55.698906506Z Documentation: http://aka.ms/webapp-linux
+2025-09-26T18:02:55.698909406Z Python 3.11.13
+2025-09-26T18:02:55.698911906Z Note: Any data outside '/home' is not persisted
+2025-09-26T18:02:58.577189413Z Starting OpenBSD Secure Shell server: sshd.
+2025-09-26T18:02:58.615105003Z WEBSITES_INCLUDE_CLOUD_CERTS is not set to true.
+2025-09-26T18:02:58.702209369Z Updating certificates in /etc/ssl/certs...
+2025-09-26T18:03:11.679097377Z 4 added, 0 removed; done.
+2025-09-26T18:03:11.679137277Z Running hooks in /etc/ca-certificates/update.d...
+2025-09-26T18:03:11.688117446Z done.
+2025-09-26T18:03:11.739609339Z CA certificates copied and updated successfully.
+2025-09-26T18:03:11.963414048Z Site's appCommandLine: gunicorn -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 main:app
+2025-09-26T18:03:11.963441348Z Launching oryx with: create-script -appPath /home/site/wwwroot -output /opt/startup/startup.sh -virtualEnvName antenv -defaultApp /opt/defaultsite -userStartupCommand 'gunicorn -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 main:app'
+2025-09-26T18:03:12.173812355Z Could not find build manifest file at '/home/site/wwwroot/oryx-manifest.toml'
+2025-09-26T18:03:12.173843955Z Could not find operation ID in manifest. Generating an operation id...
+2025-09-26T18:03:12.173848955Z Build Operation ID: 0544cbde-4099-4dc2-bada-f10f6a87a2c5
+2025-09-26T18:03:13.662507723Z Oryx Version: 0.2.20250709.3, Commit: 0cfb8cb7d114b65e539d2f9ccf9804e87b9966ba, ReleaseTagName: 20250709.3
+2025-09-26T18:03:13.977605530Z Writing output script to '/opt/startup/startup.sh'
+2025-09-26T18:03:14.296177962Z WARNING: Could not find virtual environment directory /home/site/wwwroot/antenv.
+2025-09-26T18:03:14.296201563Z WARNING: Could not find package directory /home/site/wwwroot/__oryx_packages__.
+2025-09-26T18:03:15.134555765Z 
+2025-09-26T18:03:15.134604065Z Error: class uri 'uvicorn.workers.UvicornWorker' invalid or not found: 
+2025-09-26T18:03:15.134609165Z 
+2025-09-26T18:03:15.134612565Z [Traceback (most recent call last):
+2025-09-26T18:03:15.134616365Z   File "/opt/python/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 110, in load_class
+2025-09-26T18:03:15.134620265Z     mod = importlib.import_module('.'.join(components))
+2025-09-26T18:03:15.134641365Z           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-09-26T18:03:15.134644866Z   File "/opt/python/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+2025-09-26T18:03:15.134647666Z     return _bootstrap._gcd_import(name[level:], package, level)
+2025-09-26T18:03:15.134650066Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-09-26T18:03:15.134652566Z   File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+2025-09-26T18:03:15.134655666Z   File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+2025-09-26T18:03:15.134658366Z   File "<frozen importlib._bootstrap>", line 1126, in _find_and_load_unlocked
+2025-09-26T18:03:15.134660966Z   File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+2025-09-26T18:03:15.134663566Z   File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+2025-09-26T18:03:15.134666166Z   File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+2025-09-26T18:03:15.134668766Z   File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+2025-09-26T18:03:15.134671366Z ModuleNotFoundError: No module named 'uvicorn'
+2025-09-26T18:03:15.134673866Z ]
+2025-09-26T18:03:15.134676266Z 
+
+2025-09-26T18:03:30.771028916Z    _____                               
+2025-09-26T18:03:30.771109017Z   /  _  \ __________ _________   ____  
+2025-09-26T18:03:30.771115417Z  /  /_\  \\___   /  |  \_  __ \_/ __ \ 
+2025-09-26T18:03:30.771118517Z /    |    \/    /|  |  /|  | \/\  ___/ 
+2025-09-26T18:03:30.771121517Z \____|__  /_____ \____/ |__|    \___  >
+2025-09-26T18:03:30.771124417Z         \/      \/                  \/ 
+2025-09-26T18:03:30.771127017Z A P P   S E R V I C E   O N   L I N U X
+2025-09-26T18:03:30.771129617Z 
+2025-09-26T18:03:30.771138317Z Documentation: http://aka.ms/webapp-linux
+2025-09-26T18:03:30.771141217Z Python 3.11.13
+2025-09-26T18:03:30.771143717Z Note: Any data outside '/home' is not persisted
+2025-09-26T18:03:34.623566370Z Starting OpenBSD Secure Shell server: sshd.
+2025-09-26T18:03:34.643264720Z WEBSITES_INCLUDE_CLOUD_CERTS is not set to true.
+2025-09-26T18:03:34.683158724Z Updating certificates in /etc/ssl/certs...
+2025-09-26T18:03:45.103582119Z 4 added, 0 removed; done.
+2025-09-26T18:03:45.169092219Z Running hooks in /etc/ca-certificates/update.d...
+2025-09-26T18:03:45.169132919Z done.
+2025-09-26T18:03:45.188153565Z CA certificates copied and updated successfully.
+2025-09-26T18:03:45.376685204Z Site's appCommandLine: gunicorn -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 main:app
+2025-09-26T18:03:45.378310317Z Launching oryx with: create-script -appPath /home/site/wwwroot -output /opt/startup/startup.sh -virtualEnvName antenv -defaultApp /opt/defaultsite -userStartupCommand 'gunicorn -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 main:app'
+2025-09-26T18:03:45.435509854Z Could not find build manifest file at '/home/site/wwwroot/oryx-manifest.toml'
+2025-09-26T18:03:45.435537854Z Could not find operation ID in manifest. Generating an operation id...
+2025-09-26T18:03:45.435561954Z Build Operation ID: 7665308e-11ac-4b26-bf63-4d7690da06ad
+2025-09-26T18:03:46.433044172Z Oryx Version: 0.2.20250709.3, Commit: 0cfb8cb7d114b65e539d2f9ccf9804e87b9966ba, ReleaseTagName: 20250709.3
+2025-09-26T18:03:46.650887836Z Writing output script to '/opt/startup/startup.sh'
+2025-09-26T18:03:46.909848014Z WARNING: Could not find virtual environment directory /home/site/wwwroot/antenv.
+2025-09-26T18:03:46.909907314Z WARNING: Could not find package directory /home/site/wwwroot/__oryx_packages__.
+2025-09-26T18:03:47.333616050Z 
+2025-09-26T18:03:47.333661750Z Error: class uri 'uvicorn.workers.UvicornWorker' invalid or not found: 
+2025-09-26T18:03:47.333666450Z 
+2025-09-26T18:03:47.333669650Z [Traceback (most recent call last):
+2025-09-26T18:03:47.333673150Z   File "/opt/python/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 110, in load_class
+2025-09-26T18:03:47.333676750Z     mod = importlib.import_module('.'.join(components))
+2025-09-26T18:03:47.333680050Z           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-09-26T18:03:47.333698051Z   File "/opt/python/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+2025-09-26T18:03:47.333701451Z     return _bootstrap._gcd_import(name[level:], package, level)
+2025-09-26T18:03:47.333703651Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-09-26T18:03:47.333706051Z   File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+2025-09-26T18:03:47.333708951Z   File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+2025-09-26T18:03:47.333711451Z   File "<frozen importlib._bootstrap>", line 1126, in _find_and_load_unlocked
+2025-09-26T18:03:47.333713851Z   File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+2025-09-26T18:03:47.333716251Z   File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+2025-09-26T18:03:47.333718651Z   File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+2025-09-26T18:03:47.333721051Z   File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+2025-09-26T18:03:47.333723351Z ModuleNotFoundError: No module named 'uvicorn'
+2025-09-26T18:03:47.333725751Z ]
+2025-09-26T18:03:47.333727851Z 
+
+2025-09-26T18:04:03.187735260Z    _____                               
+2025-09-26T18:04:03.187794861Z   /  _  \ __________ _________   ____  
+2025-09-26T18:04:03.187800261Z  /  /_\  \\___   /  |  \_  __ \_/ __ \ 
+2025-09-26T18:04:03.187803261Z /    |    \/    /|  |  /|  | \/\  ___/ 
+2025-09-26T18:04:03.187805861Z \____|__  /_____ \____/ |__|    \___  >
+2025-09-26T18:04:03.187808861Z         \/      \/                  \/ 
+2025-09-26T18:04:03.187812061Z A P P   S E R V I C E   O N   L I N U X
+2025-09-26T18:04:03.187814661Z 
+2025-09-26T18:04:03.187817061Z Documentation: http://aka.ms/webapp-linux
+2025-09-26T18:04:03.187819561Z Python 3.11.13
+2025-09-26T18:04:03.187822161Z Note: Any data outside '/home' is not persisted
+2025-09-26T18:04:07.101683661Z Starting OpenBSD Secure Shell server: sshd.
+2025-09-26T18:04:07.129659674Z WEBSITES_INCLUDE_CLOUD_CERTS is not set to true.
+2025-09-26T18:04:07.207457067Z Updating certificates in /etc/ssl/certs...
+2025-09-26T18:04:17.528861928Z 4 added, 0 removed; done.
+2025-09-26T18:04:17.544615148Z Running hooks in /etc/ca-certificates/update.d...
+2025-09-26T18:04:17.547097067Z done.
+2025-09-26T18:04:17.581317127Z CA certificates copied and updated successfully.
+2025-09-26T18:04:17.785088976Z Site's appCommandLine: gunicorn -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 main:app
+2025-09-26T18:04:17.793577940Z Launching oryx with: create-script -appPath /home/site/wwwroot -output /opt/startup/startup.sh -virtualEnvName antenv -defaultApp /opt/defaultsite -userStartupCommand 'gunicorn -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 main:app'
+2025-09-26T18:04:17.842713914Z Could not find build manifest file at '/home/site/wwwroot/oryx-manifest.toml'
+2025-09-26T18:04:17.842750714Z Could not find operation ID in manifest. Generating an operation id...
+2025-09-26T18:04:17.842755714Z Build Operation ID: 5ac13f7f-6042-4e18-a167-a3313dde9075
+2025-09-26T18:04:18.870019423Z Oryx Version: 0.2.20250709.3, Commit: 0cfb8cb7d114b65e539d2f9ccf9804e87b9966ba, ReleaseTagName: 20250709.3
+2025-09-26T18:04:19.093061318Z Writing output script to '/opt/startup/startup.sh'
+2025-09-26T18:04:19.338797086Z WARNING: Could not find virtual environment directory /home/site/wwwroot/antenv.
+2025-09-26T18:04:19.338846787Z WARNING: Could not find package directory /home/site/wwwroot/__oryx_packages__.
+2025-09-26T18:04:19.843701724Z 
+2025-09-26T18:04:19.843798525Z Error: class uri 'uvicorn.workers.UvicornWorker' invalid or not found: 
+2025-09-26T18:04:19.843806125Z 
+2025-09-26T18:04:19.843809825Z [Traceback (most recent call last):
+2025-09-26T18:04:19.843813525Z   File "/opt/python/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 110, in load_class
+2025-09-26T18:04:19.843818025Z     mod = importlib.import_module('.'.join(components))
+2025-09-26T18:04:19.843845025Z           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-09-26T18:04:19.843848525Z   File "/opt/python/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+2025-09-26T18:04:19.843851225Z     return _bootstrap._gcd_import(name[level:], package, level)
+2025-09-26T18:04:19.843853725Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-09-26T18:04:19.843856225Z   File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+2025-09-26T18:04:19.843859525Z   File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+2025-09-26T18:04:19.843862125Z   File "<frozen importlib._bootstrap>", line 1126, in _find_and_load_unlocked
+2025-09-26T18:04:19.843864926Z   File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+2025-09-26T18:04:19.843867526Z   File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+2025-09-26T18:04:19.843870126Z   File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+2025-09-26T18:04:19.843872726Z   File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+2025-09-26T18:04:19.843875426Z ModuleNotFoundError: No module named 'uvicorn'
+2025-09-26T18:04:19.843877926Z ]
+2025-09-26T18:04:19.843880426Z 
+
+2025-09-26T18:04:33.287610667Z    _____                               
+2025-09-26T18:04:33.287708768Z   /  _  \ __________ _________   ____  
+2025-09-26T18:04:33.287729768Z  /  /_\  \\___   /  |  \_  __ \_/ __ \ 
+2025-09-26T18:04:33.287732668Z /    |    \/    /|  |  /|  | \/\  ___/ 
+2025-09-26T18:04:33.287735168Z \____|__  /_____ \____/ |__|    \___  >
+2025-09-26T18:04:33.287738068Z         \/      \/                  \/ 
+2025-09-26T18:04:33.287740568Z A P P   S E R V I C E   O N   L I N U X
+2025-09-26T18:04:33.287742968Z 
+2025-09-26T18:04:33.287745168Z Documentation: http://aka.ms/webapp-linux
+2025-09-26T18:04:33.287747568Z Python 3.11.13
+2025-09-26T18:04:33.287749868Z Note: Any data outside '/home' is not persisted
+2025-09-26T18:04:34.817661001Z Starting OpenBSD Secure Shell server: sshd.
+2025-09-26T18:04:34.845076009Z WEBSITES_INCLUDE_CLOUD_CERTS is not set to true.
+2025-09-26T18:04:34.924456013Z Updating certificates in /etc/ssl/certs...
+2025-09-26T18:04:45.153922497Z 4 added, 0 removed; done.
+2025-09-26T18:04:45.153950897Z Running hooks in /etc/ca-certificates/update.d...
+2025-09-26T18:04:45.412645520Z done.
+2025-09-26T18:04:45.412694520Z CA certificates copied and updated successfully.
+2025-09-26T18:04:45.489412691Z Site's appCommandLine: gunicorn -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 main:app
+2025-09-26T18:04:45.489442591Z Launching oryx with: create-script -appPath /home/site/wwwroot -output /opt/startup/startup.sh -virtualEnvName antenv -defaultApp /opt/defaultsite -userStartupCommand 'gunicorn -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 main:app'
+2025-09-26T18:04:45.825653590Z Could not find build manifest file at '/home/site/wwwroot/oryx-manifest.toml'
+2025-09-26T18:04:45.825678290Z Could not find operation ID in manifest. Generating an operation id...
+2025-09-26T18:04:45.825682890Z Build Operation ID: e51492d5-5584-480b-a37a-6688a52f2593
+2025-09-26T18:04:47.239068195Z Oryx Version: 0.2.20250709.3, Commit: 0cfb8cb7d114b65e539d2f9ccf9804e87b9966ba, ReleaseTagName: 20250709.3
+2025-09-26T18:04:47.542651251Z Writing output script to '/opt/startup/startup.sh'
+2025-09-26T18:04:47.932451048Z WARNING: Could not find virtual environment directory /home/site/wwwroot/antenv.
+2025-09-26T18:04:47.934105460Z WARNING: Could not find package directory /home/site/wwwroot/__oryx_packages__.
+2025-09-26T18:04:48.767335553Z 
+2025-09-26T18:04:48.767376253Z Error: class uri 'uvicorn.workers.UvicornWorker' invalid or not found: 
+2025-09-26T18:04:48.767381253Z 
+2025-09-26T18:04:48.767404854Z [Traceback (most recent call last):
+2025-09-26T18:04:48.767409754Z   File "/opt/python/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 110, in load_class
+2025-09-26T18:04:48.767413854Z     mod = importlib.import_module('.'.join(components))
+2025-09-26T18:04:48.767444054Z           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-09-26T18:04:48.767447254Z   File "/opt/python/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+2025-09-26T18:04:48.767449954Z     return _bootstrap._gcd_import(name[level:], package, level)
+2025-09-26T18:04:48.767452454Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-09-26T18:04:48.767454854Z   File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+2025-09-26T18:04:48.767457954Z   File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+2025-09-26T18:04:48.767460554Z   File "<frozen importlib._bootstrap>", line 1126, in _find_and_load_unlocked
+2025-09-26T18:04:48.767463254Z   File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+2025-09-26T18:04:48.767465854Z   File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+2025-09-26T18:04:48.767468454Z   File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+2025-09-26T18:04:48.767470954Z   File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+2025-09-26T18:04:48.767473654Z ModuleNotFoundError: No module named 'uvicorn'
+2025-09-26T18:04:48.767476354Z ]
+2025-09-26T18:04:48.777162626Z 
+
+2025-09-26T18:07:41.622372028Z    _____                               
+2025-09-26T18:07:41.622451429Z   /  _  \ __________ _________   ____  
+2025-09-26T18:07:41.622457229Z  /  /_\  \\___   /  |  \_  __ \_/ __ \ 
+2025-09-26T18:07:41.622460229Z /    |    \/    /|  |  /|  | \/\  ___/ 
+2025-09-26T18:07:41.622463029Z \____|__  /_____ \____/ |__|    \___  >
+2025-09-26T18:07:41.622465729Z         \/      \/                  \/ 
+2025-09-26T18:07:41.622468629Z A P P   S E R V I C E   O N   L I N U X
+2025-09-26T18:07:41.622471129Z 
+2025-09-26T18:07:41.622473529Z Documentation: http://aka.ms/webapp-linux
+2025-09-26T18:07:41.622475929Z Python 3.11.13
+2025-09-26T18:07:41.622478429Z Note: Any data outside '/home' is not persisted
+2025-09-26T18:07:45.239857634Z Starting OpenBSD Secure Shell server: sshd.
+2025-09-26T18:07:45.278515528Z WEBSITES_INCLUDE_CLOUD_CERTS is not set to true.
+2025-09-26T18:07:45.376262971Z Updating certificates in /etc/ssl/certs...
+2025-09-26T18:07:58.681305316Z 4 added, 0 removed; done.
+2025-09-26T18:07:58.682543826Z Running hooks in /etc/ca-certificates/update.d...
+2025-09-26T18:07:58.702983181Z done.
+2025-09-26T18:07:58.796608091Z CA certificates copied and updated successfully.
+2025-09-26T18:07:59.155407614Z Site's appCommandLine: gunicorn -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 main:app
+2025-09-26T18:07:59.155436014Z Launching oryx with: create-script -appPath /home/site/wwwroot -output /opt/startup/startup.sh -virtualEnvName antenv -defaultApp /opt/defaultsite -userStartupCommand 'gunicorn -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 main:app'
+2025-09-26T18:07:59.423534749Z Could not find build manifest file at '/home/site/wwwroot/oryx-manifest.toml'
+2025-09-26T18:07:59.423606750Z Could not find operation ID in manifest. Generating an operation id...
+2025-09-26T18:07:59.423615550Z Build Operation ID: 009fec87-c379-4915-b3a0-8f1150b12031
+2025-09-26T18:08:00.745431181Z Oryx Version: 0.2.20250709.3, Commit: 0cfb8cb7d114b65e539d2f9ccf9804e87b9966ba, ReleaseTagName: 20250709.3
+2025-09-26T18:08:00.960868216Z Writing output script to '/opt/startup/startup.sh'
+2025-09-26T18:08:01.262476304Z WARNING: Could not find virtual environment directory /home/site/wwwroot/antenv.
+2025-09-26T18:08:01.262524705Z WARNING: Could not find package directory /home/site/wwwroot/__oryx_packages__.
+2025-09-26T18:08:03.298722257Z 
+2025-09-26T18:08:03.298765758Z Error: class uri 'uvicorn.workers.UvicornWorker' invalid or not found: 
+2025-09-26T18:08:03.298770958Z 
+2025-09-26T18:08:03.298774658Z [Traceback (most recent call last):
+2025-09-26T18:08:03.298778358Z   File "/opt/python/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 110, in load_class
+2025-09-26T18:08:03.298782458Z     mod = importlib.import_module('.'.join(components))
+2025-09-26T18:08:03.298798558Z           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-09-26T18:08:03.298802058Z   File "/opt/python/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+2025-09-26T18:08:03.298804958Z     return _bootstrap._gcd_import(name[level:], package, level)
+2025-09-26T18:08:03.298807458Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-09-26T18:08:03.298810058Z   File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+2025-09-26T18:08:03.298813058Z   File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+2025-09-26T18:08:03.298819458Z   File "<frozen importlib._bootstrap>", line 1126, in _find_and_load_unlocked
+2025-09-26T18:08:03.298822358Z   File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+2025-09-26T18:08:03.298824958Z   File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+2025-09-26T18:08:03.298827558Z   File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+2025-09-26T18:08:03.298830258Z   File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+2025-09-26T18:08:03.298832858Z ModuleNotFoundError: No module named 'uvicorn'
+2025-09-26T18:08:03.298835458Z ]
+2025-09-26T18:08:03.298837858Z 
+
+2025-09-26T18:11:58.956524022Z    _____                               
+2025-09-26T18:11:58.956561722Z   /  _  \ __________ _________   ____  
+2025-09-26T18:11:58.956566922Z  /  /_\  \\___   /  |  \_  __ \_/ __ \ 
+2025-09-26T18:11:58.956569922Z /    |    \/    /|  |  /|  | \/\  ___/ 
+2025-09-26T18:11:58.956573022Z \____|__  /_____ \____/ |__|    \___  >
+2025-09-26T18:11:58.956575822Z         \/      \/                  \/ 
+2025-09-26T18:11:58.956578422Z A P P   S E R V I C E   O N   L I N U X
+2025-09-26T18:11:58.956581022Z 
+2025-09-26T18:11:58.956583522Z Documentation: http://aka.ms/webapp-linux
+2025-09-26T18:11:58.956586023Z Python 3.11.13
+2025-09-26T18:11:58.956588523Z Note: Any data outside '/home' is not persisted
+2025-09-26T18:12:01.327574044Z Starting OpenBSD Secure Shell server: sshd.
+2025-09-26T18:12:01.383882063Z WEBSITES_INCLUDE_CLOUD_CERTS is not set to true.
+2025-09-26T18:12:01.488939844Z Updating certificates in /etc/ssl/certs...
+2025-09-26T18:12:15.852243239Z 4 added, 0 removed; done.
+2025-09-26T18:12:15.852259439Z Running hooks in /etc/ca-certificates/update.d...
+2025-09-26T18:12:15.852263939Z done.
+2025-09-26T18:12:15.852267539Z CA certificates copied and updated successfully.
+2025-09-26T18:12:16.158963550Z Site's appCommandLine: gunicorn -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 main:app
+2025-09-26T18:12:16.158996950Z Launching oryx with: create-script -appPath /home/site/wwwroot -output /opt/startup/startup.sh -virtualEnvName antenv -defaultApp /opt/defaultsite -userStartupCommand 'gunicorn -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 main:app'
+2025-09-26T18:12:16.437531549Z Could not find build manifest file at '/home/site/wwwroot/oryx-manifest.toml'
+2025-09-26T18:12:16.437574649Z Could not find operation ID in manifest. Generating an operation id...
+2025-09-26T18:12:16.437581249Z Build Operation ID: bed1ce36-8f5b-490e-b5bf-9358896c74be
+2025-09-26T18:12:17.686736060Z Oryx Version: 0.2.20250709.3, Commit: 0cfb8cb7d114b65e539d2f9ccf9804e87b9966ba, ReleaseTagName: 20250709.3
+2025-09-26T18:12:17.947868028Z Writing output script to '/opt/startup/startup.sh'
+2025-09-26T18:12:18.229454649Z WARNING: Could not find virtual environment directory /home/site/wwwroot/antenv.
+2025-09-26T18:12:18.229483649Z WARNING: Could not find package directory /home/site/wwwroot/__oryx_packages__.
+2025-09-26T18:12:19.748495194Z 
+2025-09-26T18:12:19.748531494Z Error: class uri 'uvicorn.workers.UvicornWorker' invalid or not found: 
+2025-09-26T18:12:19.748536594Z 
+2025-09-26T18:12:19.748540094Z [Traceback (most recent call last):
+2025-09-26T18:12:19.748543694Z   File "/opt/python/3.11.13/lib/python3.11/site-packages/gunicorn/util.py", line 110, in load_class
+2025-09-26T18:12:19.748547594Z     mod = importlib.import_module('.'.join(components))
+2025-09-26T18:12:19.748562994Z           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-09-26T18:12:19.748566394Z   File "/opt/python/3.11.13/lib/python3.11/importlib/__init__.py", line 126, in import_module
+2025-09-26T18:12:19.748569194Z     return _bootstrap._gcd_import(name[level:], package, level)
+2025-09-26T18:12:19.748571694Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-09-26T18:12:19.748574194Z   File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+2025-09-26T18:12:19.748577294Z   File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+2025-09-26T18:12:19.748580494Z   File "<frozen importlib._bootstrap>", line 1126, in _find_and_load_unlocked
+2025-09-26T18:12:19.748583194Z   File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+2025-09-26T18:12:19.748585794Z   File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+2025-09-26T18:12:19.748588394Z   File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+2025-09-26T18:12:19.748590995Z   File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+2025-09-26T18:12:19.748593695Z ModuleNotFoundError: No module named 'uvicorn'
+2025-09-26T18:12:19.748596195Z ]
+2025-09-26T18:12:19.748598695Z 
+
