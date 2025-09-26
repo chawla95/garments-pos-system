@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Authentication Debug Tool</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Authentication Debug Tool</h1>
+    
+    <div class="section info">
+        <h3>1. Check Local Storage</h3>
+        <button onclick="checkLocalStorage()">Check Local Storage</button>
+        <div id="localStorageResult"></div>
+    </div>
+
+    <div class="section info">
+        <h3>2. Test Backend Health</h3>
+        <button onclick="testBackendHealth()">Test Backend Health</button>
+        <div id="healthResult"></div>
+    </div>
+
+    <div class="section info">
+        <h3>3. Test Login</h3>
+        <button onclick="testLogin()">Test Login</button>
+        <div id="loginResult"></div>
+    </div>
+
+    <div class="section info">
+        <h3>4. Test Products with Auth</h3>
+        <button onclick="testProducts()">Test Products</button>
+        <div id="productsResult"></div>
+    </div>
+
+    <div class="section info">
+        <h3>5. Test CORS</h3>
+        <button onclick="testCORS()">Test CORS</button>
+        <div id="corsResult"></div>
+    </div>
+
+    <div class="section info">
+        <h3>6. Clear All Data</h3>
+        <button onclick="clearAll()">Clear All</button>
+        <div id="clearResult"></div>
+    </div>
+
+    <script>
+        const API_URL = 'https://garments-pos-backend-92s1.onrender.com';
+        let currentToken = null;
+
+        function checkLocalStorage() {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            
+            let result = '<h4>Local Storage Status:</h4>';
+            result += `<p><strong>Token:</strong> ${token ? '✅ Present' : '❌ Missing'}</p>`;
+            result += `<p><strong>User:</strong> ${user ? '✅ Present' : '❌ Missing'}</p>`;
+            
+            if (token) {
+                result += `<p><strong>Token Preview:</strong> ${token.substring(0, 50)}...</p>`;
+            }
+            
+            if (user) {
+                try {
+                    const userData = JSON.parse(user);
+                    result += `<p><strong>User Data:</strong> ${userData.username} (${userData.role})</p>`;
+                } catch (e) {
+                    result += `<p><strong>User Data:</strong> ❌ Invalid JSON</p>`;
+                }
+            }
+            
+            document.getElementById('localStorageResult').innerHTML = result;
+            currentToken = token;
+        }
+
+        async function testBackendHealth() {
+            try {
+                const response = await fetch(`${API_URL}/health`);
+                const data = await response.json();
+                
+                let result = '<h4>Backend Health:</h4>';
+                result += `<p><strong>Status:</strong> ${data.status}</p>`;
+                result += `<p><strong>Version:</strong> ${data.version}</p>`;
+                result += `<p><strong>Timestamp:</strong> ${data.timestamp}</p>`;
+                result += `<p><strong>Database:</strong> ${data.database}</p>`;
+                
+                document.getElementById('healthResult').innerHTML = result;
+            } catch (error) {
+                document.getElementById('healthResult').innerHTML = `<h4>Backend Health Error:</h4><p>${error.message}</p>`;
+            }
+        }
+
+        async function testLogin() {
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: 'admin',
+                        password: 'admin123'
+                    })
+                });
+
+                let result = '<h4>Login Test:</h4>';
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    currentToken = data.access_token;
+                    
+                    result += `<p><strong>Status:</strong> ✅ Success</p>`;
+                    result += `<p><strong>User:</strong> ${data.user.username} (${data.user.role})</p>`;
+                    result += `<p><strong>Token:</strong> ${data.access_token.substring(0, 50)}...</p>`;
+                    
+                    // Store in localStorage
+                    localStorage.setItem('token', data.access_token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    result += `<p><strong>Storage:</strong> ✅ Saved to localStorage</p>`;
+                } else {
+                    const errorData = await response.text();
+                    result += `<p><strong>Status:</strong> ❌ Failed (${response.status})</p>`;
+                    result += `<p><strong>Error:</strong> ${errorData}</p>`;
+                }
+                
+                document.getElementById('loginResult').innerHTML = result;
+            } catch (error) {
+                document.getElementById('loginResult').innerHTML = `<h4>Login Test Error:</h4><p>${error.message}</p>`;
+            }
+        }
+
+        async function testProducts() {
+            if (!currentToken) {
+                document.getElementById('productsResult').innerHTML = '<h4>Products Test:</h4><p>❌ No token available. Please login first.</p>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/products`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                let result = '<h4>Products Test:</h4>';
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    result += `<p><strong>Status:</strong> ✅ Success</p>`;
+                    result += `<p><strong>Products Found:</strong> ${data.length}</p>`;
+                    result += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    const errorData = await response.text();
+                    result += `<p><strong>Status:</strong> ❌ Failed (${response.status})</p>`;
+                    result += `<p><strong>Error:</strong> ${errorData}</p>`;
+                }
+                
+                document.getElementById('productsResult').innerHTML = result;
+            } catch (error) {
+                document.getElementById('productsResult').innerHTML = `<h4>Products Test Error:</h4><p>${error.message}</p>`;
+            }
+        }
+
+        async function testCORS() {
+            try {
+                const response = await fetch(`${API_URL}/health`, {
+                    method: 'GET',
+                    headers: {
+                        'Origin': 'https://pos-frontend-final-k4io3yvya-abhisheks-projects-f92c4bb9.vercel.app'
+                    }
+                });
+
+                let result = '<h4>CORS Test:</h4>';
+                result += `<p><strong>Status:</strong> ${response.status}</p>`;
+                result += `<p><strong>Access-Control-Allow-Origin:</strong> ${response.headers.get('access-control-allow-origin') || 'Not found'}</p>`;
+                result += `<p><strong>Access-Control-Allow-Credentials:</strong> ${response.headers.get('access-control-allow-credentials') || 'Not found'}</p>`;
+                
+                if (response.ok) {
+                    result += `<p><strong>Result:</strong> ✅ CORS working</p>`;
+                } else {
+                    result += `<p><strong>Result:</strong> ❌ CORS issue</p>`;
+                }
+                
+                document.getElementById('corsResult').innerHTML = result;
+            } catch (error) {
+                document.getElementById('corsResult').innerHTML = `<h4>CORS Test Error:</h4><p>${error.message}</p>`;
+            }
+        }
+
+        function clearAll() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            currentToken = null;
+            document.getElementById('clearResult').innerHTML = '<h4>Clear Result:</h4><p>✅ All data cleared</p>';
+        }
+
+        // Auto-run on load
+        window.onload = function() {
+            checkLocalStorage();
+            testBackendHealth();
+        };
+    </script>
+</body>
+</html> 

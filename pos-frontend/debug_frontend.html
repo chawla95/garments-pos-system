@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Frontend Debug Tool</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Frontend Debug Tool</h1>
+    
+    <div class="section info">
+        <h3>1. Check Local Storage</h3>
+        <button onclick="checkLocalStorage()">Check Local Storage</button>
+        <button onclick="clearStorage()">Clear Storage</button>
+        <div id="storage-info"></div>
+    </div>
+
+    <div class="section info">
+        <h3>2. Test Authentication</h3>
+        <button onclick="testLogin()">Test Login</button>
+        <button onclick="testToken()">Test Token</button>
+        <div id="auth-info"></div>
+    </div>
+
+    <div class="section info">
+        <h3>3. Test API Calls</h3>
+        <button onclick="testProducts()">Test Products</button>
+        <button onclick="testBrands()">Test Brands</button>
+        <div id="api-info"></div>
+    </div>
+
+    <div class="section info">
+        <h3>4. Check CORS</h3>
+        <button onclick="testCORS()">Test CORS</button>
+        <div id="cors-info"></div>
+    </div>
+
+    <script>
+        const API_URL = 'https://garments-pos-backend-92s1.onrender.com';
+        
+        function log(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : 'info';
+            element.innerHTML += `<div class="${className}">${message}</div>`;
+        }
+
+        function checkLocalStorage() {
+            const element = document.getElementById('storage-info');
+            element.innerHTML = '<h4>Local Storage Contents:</h4>';
+            
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            
+            log('storage-info', `Token: ${token ? '✅ Present' : '❌ Missing'}`, token ? 'success' : 'error');
+            log('storage-info', `User: ${user ? '✅ Present' : '❌ Missing'}`, user ? 'success' : 'error');
+            
+            if (user) {
+                try {
+                    const userData = JSON.parse(user);
+                    log('storage-info', `User Role: ${userData.role}`, 'success');
+                    log('storage-info', `Username: ${userData.username}`, 'success');
+                } catch (e) {
+                    log('storage-info', `❌ Invalid user data: ${e.message}`, 'error');
+                }
+            }
+        }
+
+        function clearStorage() {
+            localStorage.clear();
+            log('storage-info', '✅ Storage cleared successfully', 'success');
+        }
+
+        async function testLogin() {
+            const element = document.getElementById('auth-info');
+            element.innerHTML = '<h4>Login Test:</h4>';
+            
+            try {
+                log('auth-info', 'Attempting login...', 'info');
+                
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: 'admin',
+                        password: 'admin123'
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('token', data.access_token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    log('auth-info', '✅ Login successful!', 'success');
+                    log('auth-info', `Token: ${data.access_token.substring(0, 20)}...`, 'success');
+                } else {
+                    const error = await response.text();
+                    log('auth-info', `❌ Login failed: ${error}`, 'error');
+                }
+            } catch (error) {
+                log('auth-info', `❌ Login error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testToken() {
+            const element = document.getElementById('auth-info');
+            element.innerHTML = '<h4>Token Test:</h4>';
+            
+            const token = localStorage.getItem('token');
+            if (!token) {
+                log('auth-info', '❌ No token found', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/auth/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    const user = await response.json();
+                    log('auth-info', '✅ Token is valid', 'success');
+                    log('auth-info', `User: ${user.username} (${user.role})`, 'success');
+                } else {
+                    log('auth-info', '❌ Token is invalid', 'error');
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                }
+            } catch (error) {
+                log('auth-info', `❌ Token test error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testProducts() {
+            const element = document.getElementById('api-info');
+            element.innerHTML = '<h4>Products API Test:</h4>';
+            
+            const token = localStorage.getItem('token');
+            if (!token) {
+                log('api-info', '❌ No token found. Please login first.', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/products/`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    log('api-info', `✅ Products loaded successfully! Found ${data.length} products.`, 'success');
+                } else {
+                    const error = await response.text();
+                    log('api-info', `❌ Products failed: ${error}`, 'error');
+                }
+            } catch (error) {
+                log('api-info', `❌ Products error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testBrands() {
+            const element = document.getElementById('api-info');
+            element.innerHTML = '<h4>Brands API Test:</h4>';
+            
+            const token = localStorage.getItem('token');
+            if (!token) {
+                log('api-info', '❌ No token found. Please login first.', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/brands/`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    log('api-info', `✅ Brands loaded successfully! Found ${data.length} brands.`, 'success');
+                } else {
+                    const error = await response.text();
+                    log('api-info', `❌ Brands failed: ${error}`, 'error');
+                }
+            } catch (error) {
+                log('api-info', `❌ Brands error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testCORS() {
+            const element = document.getElementById('cors-info');
+            element.innerHTML = '<h4>CORS Test:</h4>';
+            
+            try {
+                const response = await fetch(`${API_URL}/health`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    log('cors-info', '✅ CORS is working correctly', 'success');
+                    log('cors-info', `Response headers: ${JSON.stringify(Object.fromEntries(response.headers.entries()), null, 2)}`, 'info');
+                } else {
+                    log('cors-info', `❌ CORS test failed: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                log('cors-info', `❌ CORS error: ${error.message}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html> 
