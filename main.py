@@ -820,24 +820,33 @@ def create_product(
     db: Session = Depends(database.get_db),
     current_user: models.User = Depends(auth.require_admin)
 ):
-    brand = db.query(models.Brand).filter(models.Brand.id == product.brand_id).first()
-    if not brand:
-        raise HTTPException(status_code=404, detail="Brand not found")
+    try:
+        brand = db.query(models.Brand).filter(models.Brand.id == product.brand_id).first()
+        if not brand:
+            raise HTTPException(status_code=404, detail="Brand not found")
 
-    # Generate product name based on brand and type
-    product_name = f"{brand.name}-{product.type}"
+        # Generate product name based on brand and type
+        product_name = f"{brand.name}-{product.type}"
 
-    db_product = models.Product(
-        name=product_name,
-        brand_id=product.brand_id,
-        type=product.type,
-        size_type=product.size_type,
-        gst_rate=product.gst_rate
-    )
-    db.add(db_product)
-    db.commit()
-    db.refresh(db_product)
-    return db_product
+        db_product = models.Product(
+            name=product_name,
+            brand_id=product.brand_id,
+            type=product.type,
+            size_type=product.size_type,
+            gst_rate=product.gst_rate
+        )
+        db.add(db_product)
+        db.commit()
+        db.refresh(db_product)
+        
+        # Log successful creation
+        logger.info(f"Product created successfully: {db_product.id} - {db_product.name}")
+        
+        return db_product
+    except Exception as e:
+        logger.error(f"Error creating product: {e}")
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to create product: {str(e)}")
 
 @app.get("/products/")
 def get_products(
