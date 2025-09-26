@@ -23,14 +23,13 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         
-    - name: Create deployment package
-      run: |
-        # Create a deployment package with all necessary files
-        zip -r deployment.zip . -x "*.git*" "*.github*" "pos-frontend/*" "*.log" "LogFiles/*"
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
         
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
       with:
         app-name: 'garments-pos-backend-v2'
-        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: 'deployment.zip'
+        package: '.'
