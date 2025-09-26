@@ -74,6 +74,7 @@ class InventoryItem(InventoryItemBase):
     id: int
     created_at: datetime.datetime
     updated_at: Optional[datetime.datetime] = None
+    product: Optional[schemas.Product] = None
     
     class Config:
         orm_mode = True

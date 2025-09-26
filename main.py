@@ -955,6 +955,9 @@ def search_inventory_by_barcode(barcode: str, db: Session = Depends(database.get
     item = db.query(models.InventoryItem).filter(models.InventoryItem.barcode == barcode).first()
     if item is None:
         raise HTTPException(status_code=404, detail="Inventory item not found")
+    
+    # Load the product relationship
+    db.refresh(item)
     return item
 
 @app.post("/inventory/subtract")
