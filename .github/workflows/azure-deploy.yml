@@ -28,8 +28,13 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         
+    - name: Create deployment package
+      run: |
+        # Create a deployment package excluding frontend and unnecessary files
+        zip -r deployment.zip . -x "*.git*" "*.github*" "pos-frontend/*" "*.log" "LogFiles/*" "node_modules/*" "*.pyc" "__pycache__/*"
+        
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
       with:
         app-name: 'garments-pos-backend-v2'
-        package: '.'
+        package: 'deployment.zip'
